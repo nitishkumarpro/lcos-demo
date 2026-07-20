@@ -2,299 +2,1308 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🏪 Vendor Panel – LCOS</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="state.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="Local Commerce OS - Premium Vendor Operating System">
+    <title>Vendor Panel | Local Commerce OS</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
-        .vendor-body { display: flex; height: 100vh; }
-        .sidebar { width: 240px; background: white; border-right: 1px solid #e2e8f0; overflow-y: auto; }
-        .main-content { flex: 1; overflow-y: auto; padding: 1.5rem; }
-        .stat-card { background: white; border-radius: 1rem; padding: 1.25rem; border: 1px solid #e2e8f0; }
-    </style>
-</head>
-<body class="vendor-body">
+        /* ==========================================================================
+           LOCAL COMMERCE OS - VENDOR PANEL STYLESHEET
+           Billion-Dollar Grade Design System (Extended for Desktop/Tablet)
+           ========================================================================== */
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-        <div class="p-4 border-b">
-            <h2 class="font-bold text-amber-600 text-lg"><i class="fa-solid fa-store"></i> Vendor Panel</h2>
-            <p class="text-xs text-slate-500">QuickMart Store</p>
-        </div>
-        <nav class="p-2 space-y-1">
-            <div onclick="switchVendorTab('dashboard')" class="sidebar-item active" data-vtab="dashboard">
-                <i class="fa-solid fa-chart-pie sidebar-icon"></i> Dashboard
-            </div>
-            <div onclick="switchVendorTab('orders')" class="sidebar-item" data-vtab="orders">
-                <i class="fa-solid fa-receipt sidebar-icon"></i> Orders
-            </div>
-            <div onclick="switchVendorTab('inventory')" class="sidebar-item" data-vtab="inventory">
-                <i class="fa-solid fa-boxes-stacked sidebar-icon"></i> Inventory
-            </div>
-            <div onclick="switchVendorTab('products')" class="sidebar-item" data-vtab="products">
-                <i class="fa-solid fa-tag sidebar-icon"></i> Products
-            </div>
-            <div onclick="switchVendorTab('promotions')" class="sidebar-item" data-vtab="promotions">
-                <i class="fa-solid fa-percent sidebar-icon"></i> Promotions
-            </div>
-            <div onclick="switchVendorTab('analytics')" class="sidebar-item" data-vtab="analytics">
-                <i class="fa-solid fa-chart-line sidebar-icon"></i> Analytics
-            </div>
-            <div onclick="switchVendorTab('finance')" class="sidebar-item" data-vtab="finance">
-                <i class="fa-solid fa-indian-rupee-sign sidebar-icon"></i> Finance
-            </div>
-            <div onclick="switchVendorTab('team')" class="sidebar-item" data-vtab="team">
-                <i class="fa-solid fa-users sidebar-icon"></i> Team
-            </div>
-            <div onclick="switchVendorTab('marketing')" class="sidebar-item" data-vtab="marketing">
-                <i class="fa-solid fa-bullhorn sidebar-icon"></i> Marketing
-            </div>
-            <div onclick="switchVendorTab('reviews')" class="sidebar-item" data-vtab="reviews">
-                <i class="fa-solid fa-star sidebar-icon"></i> Reviews
-            </div>
-        </nav>
-    </aside>
+        :root {
+            /* Brand Colors */
+            --color-primary: #059669;
+            --color-primary-light: #10b981;
+            --color-primary-dark: #047857;
+            --color-primary-50: #ecfdf5;
+            --color-primary-100: #d1fae5;
+            
+            /* Neutral Colors */
+            --color-bg: #f8fafc;
+            --color-surface: #ffffff;
+            --color-surface-elevated: #ffffff;
+            --color-border: #e2e8f0;
+            --color-border-light: #f1f5f9;
+            
+            /* Text Colors */
+            --color-text: #0f172a;
+            --color-text-secondary: #475569;
+            --color-text-muted: #94a3b8;
+            
+            /* Semantic Colors */
+            --color-success: #16a34a;
+            --color-success-bg: #dcfce7;
+            --color-warning: #d97706;
+            --color-warning-bg: #fef3c7;
+            --color-danger: #dc2626;
+            --color-danger-bg: #fee2e2;
+            --color-info: #0284c7;
+            --color-info-bg: #e0f2fe;
+            --color-purple: #7c3aed;
+            --color-purple-bg: #f3e8ff;
 
-    <!-- MAIN CONTENT -->
-    <main class="main-content" id="vendorContent">
-        <!-- Content rendered by JS -->
-    </main>
+            /* Spacing & Layout */
+            --sidebar-width: 260px;
+            --header-height: 64px;
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --radius-2xl: 1.5rem;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+            --shadow-glow: 0 0 20px rgba(5, 150, 105, 0.15);
 
-    <script>
-        // Track current tab
-        let currentTab = 'dashboard';
-
-        function switchVendorTab(tab) {
-            currentTab = tab;
-            renderTab(tab);
-            // Update sidebar active state
-            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
-            const activeItem = document.querySelector(`.sidebar-item[data-vtab="${tab}"]`);
-            if (activeItem) activeItem.classList.add('active');
+            /* Transitions */
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        function renderTab(tab) {
-            const container = document.getElementById('vendorContent');
-            switch (tab) {
-                case 'dashboard': container.innerHTML = renderDashboard(); break;
-                case 'orders': container.innerHTML = renderOrders(); break;
-                case 'inventory': container.innerHTML = renderInventory(); break;
-                case 'products': container.innerHTML = renderProducts(); break;
-                case 'promotions': container.innerHTML = renderPromotions(); break;
-                case 'analytics': container.innerHTML = renderAnalytics(); break;
-                case 'finance': container.innerHTML = renderFinance(); break;
-                case 'team': container.innerHTML = renderTeam(); break;
-                case 'marketing': container.innerHTML = renderMarketing(); break;
-                case 'reviews': container.innerHTML = renderReviews(); break;
+        /* --- 1. Global Reset & Base --- */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { font-size: 16px; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.5;
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- 2. Typography --- */
+        h1, h2, h3, h4, h5, h6 { font-weight: 700; line-height: 1.2; color: var(--color-text); letter-spacing: -0.025em; }
+        h1 { font-size: 1.875rem; }
+        h2 { font-size: 1.5rem; }
+        h3 { font-size: 1.25rem; }
+        h4 { font-size: 1.125rem; }
+        p { margin-bottom: 0.5rem; color: var(--color-text-secondary); }
+        .text-sm { font-size: 0.875rem; }
+        .text-xs { font-size: 0.75rem; }
+        .text-lg { font-size: 1.125rem; }
+        .font-medium { font-weight: 500; }
+        .font-semibold { font-weight: 600; }
+        .font-bold { font-weight: 700; }
+        .text-muted { color: var(--color-text-muted); }
+        .text-primary { color: var(--color-primary); }
+        .text-success { color: var(--color-success); }
+        .text-danger { color: var(--color-danger); }
+        .text-warning { color: var(--color-warning); }
+        .truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* --- 3. Layout Utilities --- */
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+        .gap-1 { gap: 0.25rem; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
+        .gap-4 { gap: 1rem; }
+        .gap-6 { gap: 1.5rem; }
+        .w-full { width: 100%; }
+        .h-full { height: 100%; }
+        .relative { position: relative; }
+        .absolute { position: absolute; }
+        .fixed { position: fixed; }
+        .z-10 { z-index: 10; }
+        .z-20 { z-index: 20; }
+        .z-30 { z-index: 30; }
+        .hidden { display: none !important; }
+        .overflow-y-auto { overflow-y: auto; }
+
+        /* --- 4. Sidebar Navigation --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--color-surface);
+            border-right: 1px solid var(--color-border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 40;
+            transition: transform var(--transition-base);
+        }
+        .sidebar-header {
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .sidebar-logo {
+            width: 36px;
+            height: 36px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.25rem;
+        }
+        .sidebar-title { font-weight: 700; font-size: 1.125rem; color: var(--color-text); }
+        .sidebar-subtitle { font-size: 0.75rem; color: var(--color-text-muted); }
+        
+        .sidebar-nav { flex: 1; overflow-y: auto; padding: 1rem 0.75rem; }
+        .nav-section { margin-bottom: 1.5rem; }
+        .nav-section-title {
+            font-size: 0.6875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--color-text-muted);
+            padding: 0 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.625rem 0.75rem;
+            border-radius: var(--radius-lg);
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            margin-bottom: 0.25rem;
+            text-decoration: none;
+        }
+        .nav-item:hover { background: var(--color-bg); color: var(--color-text); }
+        .nav-item.active {
+            background: var(--color-primary-50);
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+        .nav-item svg { width: 20px; height: 20px; flex-shrink: 0; }
+        .nav-badge {
+            margin-left: auto;
+            background: var(--color-danger);
+            color: white;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            padding: 0.125rem 0.5rem;
+            border-radius: 99px;
+        }
+
+        /* --- 5. Main Content Area --- */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .top-header {
+            height: var(--header-height);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 30;
+        }
+        .content-area {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        /* --- 6. Components: Cards --- */
+        .card {
+            background: var(--color-surface);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--color-border);
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-base);
+        }
+        .card-hover:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        .card-header {
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .card-body { padding: 1.25rem; }
+        .card-footer {
+            padding: 1rem 1.25rem;
+            border-top: 1px solid var(--color-border);
+            background: var(--color-bg);
+            border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+        }
+
+        /* --- 7. Components: Buttons --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all var(--transition-fast);
+            text-decoration: none;
+        }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary { background: var(--color-primary); color: white; box-shadow: var(--shadow-glow); }
+        .btn-primary:hover { background: var(--color-primary-dark); }
+        .btn-secondary { background: var(--color-surface); border-color: var(--color-border); color: var(--color-text); }
+        .btn-secondary:hover { background: var(--color-bg); }
+        .btn-success { background: var(--color-success); color: white; }
+        .btn-warning { background: var(--color-warning); color: white; }
+        .btn-danger { background: var(--color-danger); color: white; }
+        .btn-sm { padding: 0.375rem 0.75rem; font-size: 0.75rem; }
+        .btn-lg { padding: 0.875rem 1.5rem; font-size: 1rem; }
+        .btn-icon { padding: 0.5rem; border-radius: var(--radius-lg); background: var(--color-bg); border: 1px solid var(--color-border); }
+        .btn-icon:hover { background: var(--color-border-light); }
+
+        /* --- 8. Components: Badges --- */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 0.25rem 0.75rem;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+        .badge-primary { background: var(--color-primary-100); color: var(--color-primary-dark); }
+        .badge-success { background: var(--color-success-bg); color: var(--color-success); }
+        .badge-warning { background: var(--color-warning-bg); color: var(--color-warning); }
+        .badge-danger { background: var(--color-danger-bg); color: var(--color-danger); }
+        .badge-info { background: var(--color-info-bg); color: var(--color-info); }
+        .badge-purple { background: var(--color-purple-bg); color: var(--color-purple); }
+        .badge-live {
+            background: #fef2f2;
+            color: #dc2626;
+            animation: pulse-live 2s infinite;
+        }
+        @keyframes pulse-live {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+            50% { opacity: 0.8; box-shadow: 0 0 0 6px rgba(220, 38, 38, 0); }
+        }
+
+        /* --- 9. Components: Tables --- */
+        .table-container { overflow-x: auto; }
+        .table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+        .table th {
+            text-align: left;
+            padding: 0.875rem 1rem;
+            font-weight: 600;
+            color: var(--color-text-secondary);
+            background: var(--color-bg);
+            border-bottom: 1px solid var(--color-border);
+            white-space: nowrap;
+        }
+        .table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--color-border-light);
+            color: var(--color-text);
+            vertical-align: middle;
+        }
+        .table tr:last-child td { border-bottom: none; }
+        .table tr:hover td { background: var(--color-bg); }
+
+        /* --- 10. Components: Forms --- */
+        .input {
+            width: 100%;
+            padding: 0.625rem 0.875rem;
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            font-size: 0.875rem;
+            background: var(--color-surface);
+            transition: all var(--transition-fast);
+            font-family: inherit;
+        }
+        .input:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1); }
+        .select {
+            width: 100%;
+            padding: 0.625rem 0.875rem;
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            font-size: 0.875rem;
+            background: var(--color-surface);
+            cursor: pointer;
+        }
+
+        /* --- 11. Components: Stats Grid --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .stat-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .stat-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .stat-value { font-size: 1.875rem; font-weight: 800; color: var(--color-text); line-height: 1; }
+        .stat-label { font-size: 0.875rem; color: var(--color-text-secondary); font-weight: 500; }
+        .stat-trend { font-size: 0.75rem; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+        .stat-trend.up { color: var(--color-success); }
+        .stat-trend.down { color: var(--color-danger); }
+
+        /* --- 12. Components: Order Pipeline (Kanban) --- */
+        .pipeline {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            align-items: start;
+        }
+        .pipeline-column {
+            background: var(--color-bg);
+            border-radius: var(--radius-xl);
+            padding: 1rem;
+            border: 1px solid var(--color-border);
+        }
+        .pipeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0 0.25rem;
+        }
+        .pipeline-title { font-weight: 700; font-size: 0.9375rem; display: flex; align-items: center; gap: 0.5rem; }
+        .pipeline-count {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            padding: 0.125rem 0.5rem;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .pipeline-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            box-shadow: var(--shadow-sm);
+        }
+        .pipeline-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: var(--color-primary-100); }
+        .pipeline-card.new-order {
+            animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            border-left: 4px solid var(--color-primary);
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- 13. Components: Toast Notifications --- */
+        .toast-container {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .toast {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 1rem 1.25rem;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            min-width: 320px;
+            animation: slideInRight 0.3s ease;
+        }
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100%); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .toast-icon { flex-shrink: 0; margin-top: 2px; }
+        .toast-content { flex: 1; }
+        .toast-title { font-weight: 600; font-size: 0.9375rem; margin-bottom: 0.25rem; }
+        .toast-message { font-size: 0.875rem; color: var(--color-text-secondary); }
+
+        /* --- 14. View Management --- */
+        .view { display: none; animation: fadeIn 0.3s ease; }
+        .view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- 15. AI Insight Card --- */
+        .ai-insight {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            border: 1px solid #bbf7d0;
+            border-radius: var(--radius-xl);
+            padding: 1.25rem;
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .ai-insight-icon {
+            width: 48px;
+            height: 48px;
+            background: white;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-primary);
+            box-shadow: var(--shadow-sm);
+            flex-shrink: 0;
+        }
+
+        /* --- 16. Responsive --- */
+        @media (max-width: 1024px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .mobile-menu-btn { display: flex !important; }
+        }
+        @media (min-width: 1025px) {
+            .mobile-menu-btn { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==========================================================================
+         SIDEBAR NAVIGATION
+         ========================================================================== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">Q</div>
+            <div>
+                <div class="sidebar-title">QuickMart</div>
+                <div class="sidebar-subtitle">Vendor Portal</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Main</div>
+                <a class="nav-item active" data-view="dashboard" onclick="router.navigate('dashboard')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    Dashboard
+                </a>
+                <a class="nav-item" data-view="orders" onclick="router.navigate('orders')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                    Orders
+                    <span class="nav-badge" id="sidebar-order-badge">0</span>
+                </a>
+                <a class="nav-item" data-view="inventory" onclick="router.navigate('inventory')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                    Inventory
+                </a>
+                <a class="nav-item" data-view="products" onclick="router.navigate('products')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                    Products
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Growth</div>
+                <a class="nav-item" data-view="analytics" onclick="router.navigate('analytics')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                    Analytics
+                </a>
+                <a class="nav-item" data-view="promotions" onclick="router.navigate('promotions')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>
+                    Promotions
+                </a>
+                <a class="nav-item" data-view="finance" onclick="router.navigate('finance')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    Finance
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">System</div>
+                <a class="nav-item" data-view="team" onclick="router.navigate('team')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    Team & Roles
+                </a>
+                <a class="nav-item" data-view="settings" onclick="router.navigate('settings')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    Settings
+                </a>
+            </div>
+        </nav>
+
+        <div style="padding: 1rem; border-top: 1px solid var(--color-border);">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center text-primary font-bold border border-primary-200">Q</div>
+                <div class="flex-1 min-w-0">
+                    <div class="font-semibold text-sm truncate">QuickMart Store</div>
+                    <div class="text-xs text-muted truncate">Koramangala, BLR</div>
+                </div>
+                <button class="btn-icon" title="Logout">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ==========================================================================
+         MAIN CONTENT
+         ========================================================================== -->
+    <main class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="flex items-center gap-4">
+                <button class="btn-icon mobile-menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
+                <h2 id="page-title" class="font-bold text-lg">Dashboard</h2>
+            </div>
+            <div class="flex items-center gap-3">
+                <button class="btn-icon relative" onclick="showToast('info', 'Notifications', 'You have 3 unread notifications')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                    <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-danger rounded-full border-2 border-white"></span>
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="router.navigate('products')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    Add Product
+                </button>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            
+            <!-- VIEW: DASHBOARD -->
+            <div id="view-dashboard" class="view active">
+                <!-- AI Insight -->
+                <div class="ai-insight">
+                    <div class="ai-insight-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path><path d="M12 2a10 10 0 0 1 10 10"></path><path d="M12 12 2.1 12.1"></path></svg>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-primary mb-1">AI Demand Forecast</h4>
+                        <p class="text-sm text-text-secondary mb-3">Based on historical data and local weather patterns, we predict a <strong>20% spike in milk and bread demand</strong> tomorrow morning. Consider increasing stock levels by 15 units to avoid stockouts.</p>
+                        <button class="btn btn-sm btn-primary" onclick="showToast('success', 'AI Action', 'Restock suggestion sent to inventory manager')">Auto-Adjust Inventory</button>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon" style="background: var(--color-primary-100); color: var(--color-primary);">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                            </div>
+                            <span class="stat-trend up">↑ 12.5%</span>
+                        </div>
+                        <div class="stat-value" id="stat-revenue">₹12,450</div>
+                        <div class="stat-label">Today's Revenue</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon" style="background: var(--color-info-bg); color: var(--color-info);">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                            </div>
+                            <span class="stat-trend up">↑ 8.2%</span>
+                        </div>
+                        <div class="stat-value" id="stat-orders">48</div>
+                        <div class="stat-label">Total Orders</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon" style="background: var(--color-warning-bg); color: var(--color-warning);">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            </div>
+                            <span class="stat-trend down">↓ 2.1%</span>
+                        </div>
+                        <div class="stat-value">24m</div>
+                        <div class="stat-label">Avg. Prep Time</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon" style="background: var(--color-danger-bg); color: var(--color-danger);">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="stat-low-stock">3</div>
+                        <div class="stat-label">Low Stock Alerts</div>
+                    </div>
+                </div>
+
+                <!-- Live Orders & Top Products -->
+                <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 1.5rem;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="font-bold flex items-center gap-2">
+                                <span class="badge badge-live">LIVE</span>
+                                Real-time Orders
+                            </h3>
+                            <button class="btn btn-sm btn-secondary" onclick="router.navigate('orders')">View All</button>
+                        </div>
+                        <div class="card-body" style="padding: 0;">
+                            <div class="table-container">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Order ID</th>
+                                            <th>Customer</th>
+                                            <th>Items</th>
+                                            <th>Amount</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="dashboard-orders-table">
+                                        <!-- Populated by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="font-bold">Top Products</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="flex flex-col gap-4" id="top-products-list">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: ORDERS (Pipeline) -->
+            <div id="view-orders" class="view">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-bold text-lg">Order Pipeline</h3>
+                    <div class="flex gap-2">
+                        <input type="text" class="input" style="width: 250px;" placeholder="Search order ID...">
+                        <button class="btn btn-secondary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                            Filter
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pipeline">
+                    <!-- Column: New -->
+                    <div class="pipeline-column">
+                        <div class="pipeline-header">
+                            <div class="pipeline-title">
+                                <span class="w-2 h-2 rounded-full bg-primary"></span>
+                                New Orders
+                            </div>
+                            <span class="pipeline-count" id="count-new">0</span>
+                        </div>
+                        <div id="pipeline-new" class="flex flex-col gap-3">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Column: Preparing -->
+                    <div class="pipeline-column">
+                        <div class="pipeline-header">
+                            <div class="pipeline-title">
+                                <span class="w-2 h-2 rounded-full bg-warning"></span>
+                                Preparing
+                            </div>
+                            <span class="pipeline-count" id="count-preparing">0</span>
+                        </div>
+                        <div id="pipeline-preparing" class="flex flex-col gap-3">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Column: Ready for Pickup -->
+                    <div class="pipeline-column">
+                        <div class="pipeline-header">
+                            <div class="pipeline-title">
+                                <span class="w-2 h-2 rounded-full bg-info"></span>
+                                Ready
+                            </div>
+                            <span class="pipeline-count" id="count-ready">0</span>
+                        </div>
+                        <div id="pipeline-ready" class="flex flex-col gap-3">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Column: Completed -->
+                    <div class="pipeline-column">
+                        <div class="pipeline-header">
+                            <div class="pipeline-title">
+                                <span class="w-2 h-2 rounded-full bg-success"></span>
+                                Completed
+                            </div>
+                            <span class="pipeline-count" id="count-completed">0</span>
+                        </div>
+                        <div id="pipeline-completed" class="flex flex-col gap-3">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: INVENTORY -->
+            <div id="view-inventory" class="view">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-bold text-lg">Inventory Management</h3>
+                    <div class="flex gap-2">
+                        <button class="btn btn-secondary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            Bulk Upload
+                        </button>
+                        <button class="btn btn-primary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            Add Item
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Product Name</th>
+                                    <th>SKU</th>
+                                    <th>Category</th>
+                                    <th>Stock Level</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventory-table-body">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: PRODUCTS -->
+            <div id="view-products" class="view">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-bold text-lg">Product Catalog</h3>
+                    <button class="btn btn-primary" onclick="showToast('info', 'AI Feature', 'AI Description Generator opened')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path></svg>
+                        AI Generate Listing
+                    </button>
+                </div>
+                <div class="grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;" id="products-grid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- VIEW: ANALYTICS -->
+            <div id="view-analytics" class="view">
+                <h3 class="font-bold text-lg mb-6">Performance Analytics</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Conversion Rate</div>
+                        <div class="stat-value">4.8%</div>
+                        <div class="stat-trend up">↑ 0.5% from last week</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Avg. Order Value</div>
+                        <div class="stat-value">₹258</div>
+                        <div class="stat-trend up">↑ ₹12 from last week</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Customer Retention</div>
+                        <div class="stat-value">68%</div>
+                        <div class="stat-trend down">↓ 2% from last week</div>
+                    </div>
+                </div>
+                <div class="card" style="height: 400px; display: flex; align-items: center; justify-content: center; background: var(--color-bg); border: 2px dashed var(--color-border);">
+                    <div class="text-center">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="1.5" class="mb-4"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                        <h4 class="font-bold text-muted">Interactive Chart Placeholder</h4>
+                        <p class="text-sm text-muted">Sales trend over the last 30 days would render here using Chart.js or D3.js</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: FINANCE -->
+            <div id="view-finance" class="view">
+                <h3 class="font-bold text-lg mb-6">Financial Overview</h3>
+                <div class="card mb-6">
+                    <div class="card-body flex items-center justify-between">
+                        <div>
+                            <div class="text-muted text-sm mb-1">Available for Payout</div>
+                            <div class="text-3xl font-bold">₹12,500.00</div>
+                            <div class="text-xs text-muted mt-1">Next auto-payout: Tomorrow, 10:00 AM</div>
+                        </div>
+                        <button class="btn btn-primary btn-lg">Request Payout</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="font-bold">Recent Transactions</h4>
+                    </div>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="finance-table-body">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Placeholder Views for completeness -->
+            <div id="view-promotions" class="view">
+                <div class="text-center py-12">
+                    <h3 class="font-bold text-xl mb-2">Promotions & Marketing</h3>
+                    <p class="text-muted mb-4">Create coupons, flash sales, and sponsored listings.</p>
+                    <button class="btn btn-primary">Create New Campaign</button>
+                </div>
+            </div>
+            <div id="view-team" class="view">
+                <div class="text-center py-12">
+                    <h3 class="font-bold text-xl mb-2">Team Management</h3>
+                    <p class="text-muted mb-4">Manage staff roles, permissions, and attendance.</p>
+                    <button class="btn btn-primary">Add Team Member</button>
+                </div>
+            </div>
+            <div id="view-settings" class="view">
+                <div class="text-center py-12">
+                    <h3 class="font-bold text-xl mb-2">Store Settings</h3>
+                    <p class="text-muted mb-4">Configure business hours, delivery radius, and tax settings.</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- ==========================================================================
+         JAVASCRIPT: VENDOR LOGIC & STATE SYNC
+         ========================================================================== -->
+    <script>
+        /**
+         * LOCAL COMMERCE OS - VENDOR PANEL CONTROLLER
+         * Handles UI rendering, order pipeline management, and real-time sync with Customer/Rider tabs.
+         */
+
+        // --- 1. MOCK DATABASE (Vendor Specific) ---
+        const vendorDB = {
+            products: [
+                { id: 'p1', name: 'Amul Gold Milk', sku: 'MILK-001', category: 'Dairy', stock: 45, minStock: 20, price: 65 },
+                { id: 'p2', name: 'Brown Bread', sku: 'BRD-002', category: 'Bakery', stock: 30, minStock: 15, price: 45 },
+                { id: 'p3', name: 'Organic Eggs', sku: 'EGG-003', category: 'Dairy', stock: 60, minStock: 24, price: 80 },
+                { id: 'p4', name: 'Greek Yogurt', sku: 'YOG-004', category: 'Dairy', stock: 8, minStock: 10, price: 55 },
+                { id: 'p5', name: 'Banana (6 pcs)', sku: 'FRT-005', category: 'Fruits', stock: 50, minStock: 20, price: 30 },
+                { id: 'p6', name: 'Tomato (1 kg)', sku: 'VEG-006', category: 'Vegetables', stock: 40, minStock: 15, price: 40 },
+                { id: 'p7', name: 'Amul Butter', sku: 'BTR-007', category: 'Dairy', stock: 25, minStock: 10, price: 56 },
+                { id: 'p8', name: 'Paneer (200g)', sku: 'PNR-008', category: 'Dairy', stock: 15, minStock: 10, price: 90 },
+                { id: 'p9', name: 'Coca Cola (750ml)', sku: 'BEV-009', category: 'Beverages', stock: 100, minStock: 30, price: 40 },
+                { id: 'p10', name: 'Lays Chips', sku: 'SNK-010', category: 'Snacks', stock: 80, minStock: 20, price: 20 }
+            ],
+            transactions: [
+                { id: 'TXN-V-001', date: 'Today, 10:30 AM', desc: 'Order #ORD9921 Settlement', type: 'credit', amount: 110 },
+                { id: 'TXN-V-002', date: 'Today, 09:15 AM', desc: 'Platform Commission (15%)', type: 'debit', amount: 45 },
+                { id: 'TXN-V-003', date: 'Yesterday, 06:00 PM', desc: 'Order #ORD8832 Settlement', type: 'credit', amount: 280 },
+                { id: 'TXN-V-004', date: 'Yesterday, 06:00 PM', desc: 'Platform Commission (15%)', type: 'debit', amount: 42 }
+            ]
+        };
+
+        // --- 2. STATE SYNCHRONIZATION ---
+        // We assume `state.js` is loaded globally, but we also set up a fallback listener
+        // to ensure this tab reacts to changes from `customer.html`.
+        
+        function initVendorState() {
+            // Ensure global state exists (in case state.js is loaded)
+            if (!window.state) {
+                window.state = JSON.parse(localStorage.getItem('lcos_state')) || {
+                    orders: [],
+                    stats: { totalOrders: 0, revenue: 0, liveOrders: 0 },
+                    inventory: {}
+                };
             }
-            // Re-apply updateUI for live data
+
+            // Listen for BroadcastChannel messages
+            if (typeof window.channel !== 'undefined') {
+                window.channel.onmessage = (event) => {
+                    window.state = event.data;
+                    updateUI(window.state);
+                };
+            } else {
+                // Fallback: Poll localStorage if BroadcastChannel fails (rare)
+                setInterval(() => {
+                    const stored = JSON.parse(localStorage.getItem('lcos_state'));
+                    if (stored && JSON.stringify(stored) !== JSON.stringify(window.state)) {
+                        window.state = stored;
+                        updateUI(window.state);
+                    }
+                }, 1000);
+            }
+
+            // Initial render
             updateUI(window.state);
         }
 
-        function renderDashboard() {
-            return `
-                <h3 class="text-xl font-bold mb-4">Dashboard</h3>
-                <div class="grid grid-cols-4 gap-4 mb-6">
-                    <div class="stat-card">
-                        <p class="text-slate-500 text-sm">Today's Orders</p>
-                        <p class="text-2xl font-bold" id="vOrders">0</p>
-                    </div>
-                    <div class="stat-card">
-                        <p class="text-slate-500 text-sm">Revenue</p>
-                        <p class="text-2xl font-bold" id="vRevenue">₹0</p>
-                    </div>
-                    <div class="stat-card">
-                        <p class="text-slate-500 text-sm">Live Orders</p>
-                        <div class="flex items-center gap-2">
-                            <span class="pulse-dot inline-block w-3 h-3 bg-emerald-500 rounded-full"></span>
-                            <span id="vLive">0</span>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <p class="text-slate-500 text-sm">Inventory Items</p>
-                        <p class="text-2xl font-bold" id="vInventoryCount">${Object.keys(window.state.inventory).length}</p>
-                    </div>
-                </div>
-                <h4 class="font-semibold mb-2">Recent Orders</h4>
-                <div id="vendorOrderList" class="space-y-2"></div>
-            `;
+        // --- 3. UI UPDATE ENGINE ---
+        function updateUI(newState) {
+            renderDashboardStats(newState);
+            renderDashboardOrders(newState);
+            renderPipeline(newState);
+            renderInventory();
+            renderProducts();
+            renderFinance();
+            updateSidebarBadge(newState);
         }
 
-        function renderOrders() {
-            return `
-                <h3 class="text-xl font-bold mb-4">All Orders</h3>
-                <div id="vendorOrderList" class="space-y-2"></div>
-            `;
+        function updateSidebarBadge(state) {
+            const newOrders = state.orders.filter(o => o.status === 'placed' || o.status === 'accepted').length;
+            const badge = document.getElementById('sidebar-order-badge');
+            badge.textContent = newOrders;
+            badge.classList.toggle('hidden', newOrders === 0);
+        }
+
+        function renderDashboardStats(state) {
+            // Calculate today's revenue from state
+            const todayRevenue = state.orders.reduce((sum, o) => sum + (o.price || 0), 0);
+            document.getElementById('stat-revenue').textContent = `₹${todayRevenue.toLocaleString()}`;
+            document.getElementById('stat-orders').textContent = state.stats.totalOrders || state.orders.length;
+            
+            // Low stock count
+            const lowStockCount = vendorDB.products.filter(p => p.stock <= p.minStock).length;
+            document.getElementById('stat-low-stock').textContent = lowStockCount;
+        }
+
+        function renderDashboardOrders(state) {
+            const tbody = document.getElementById('dashboard-orders-table');
+            const recentOrders = [...state.orders].reverse().slice(0, 5);
+            
+            if (recentOrders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-8">No orders yet. Share your store link!</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = recentOrders.map(order => {
+                const statusBadge = getStatusBadge(order.status);
+                let actionBtn = '';
+                if (order.status === 'placed') {
+                    actionBtn = `<button class="btn btn-sm btn-primary" onclick="advanceOrder('${order.id}', 'accepted')">Accept</button>`;
+                } else if (order.status === 'accepted') {
+                    actionBtn = `<button class="btn btn-sm btn-warning" onclick="advanceOrder('${order.id}', 'preparing')">Prep</button>`;
+                } else if (order.status === 'preparing') {
+                    actionBtn = `<button class="btn btn-sm btn-info" style="background:var(--color-info);color:white;" onclick="advanceOrder('${order.id}', 'packed')">Pack</button>`;
+                } else {
+                    actionBtn = `<span class="text-xs text-muted">Completed</span>`;
+                }
+
+                return `
+                    <tr class="${order.status === 'placed' ? 'new-order' : ''}">
+                        <td class="font-semibold">${order.id}</td>
+                        <td>${order.customer}</td>
+                        <td class="truncate" style="max-width: 150px;">${order.product}</td>
+                        <td class="font-bold">₹${order.price}</td>
+                        <td>${statusBadge}</td>
+                        <td>${actionBtn}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderPipeline(state) {
+            const columns = {
+                'placed': { el: document.getElementById('pipeline-new'), count: document.getElementById('count-new') },
+                'accepted': { el: document.getElementById('pipeline-preparing'), count: document.getElementById('count-preparing') },
+                'preparing': { el: document.getElementById('pipeline-preparing'), count: document.getElementById('count-preparing') }, // Grouped for demo
+                'packed': { el: document.getElementById('pipeline-ready'), count: document.getElementById('count-ready') },
+                'assigned': { el: document.getElementById('pipeline-ready'), count: document.getElementById('count-ready') },
+                'delivered': { el: document.getElementById('pipeline-completed'), count: document.getElementById('count-completed') },
+                'cancelled': { el: document.getElementById('pipeline-completed'), count: document.getElementById('count-completed') }
+            };
+
+            // Reset columns
+            Object.values(columns).forEach(col => { col.el.innerHTML = ''; });
+            const counts = { new: 0, preparing: 0, ready: 0, completed: 0 };
+
+            state.orders.forEach(order => {
+                let targetKey = order.status;
+                if (targetKey === 'placed') { counts.new++; }
+                else if (targetKey === 'accepted' || targetKey === 'preparing') { counts.preparing++; }
+                else if (targetKey === 'packed' || targetKey === 'assigned') { counts.ready++; }
+                else { counts.completed++; }
+
+                const card = document.createElement('div');
+                card.className = `pipeline-card ${order.status === 'placed' ? 'new-order' : ''}`;
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="font-bold text-sm">${order.id}</span>
+                        <span class="text-xs text-muted">${order.time}</span>
+                    </div>
+                    <div class="text-sm mb-3 line-clamp-2">${order.product}</div>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="font-bold">₹${order.price}</span>
+                        <span class="text-xs text-muted">${order.address}</span>
+                    </div>
+                    <div class="flex gap-2">
+                        ${getPipelineActions(order)}
+                    </div>
+                `;
+                
+                // Map to correct column DOM element
+                let colEl = columns['placed'].el;
+                if (order.status === 'accepted' || order.status === 'preparing') colEl = columns['preparing'].el;
+                else if (order.status === 'packed' || order.status === 'assigned') colEl = columns['packed'].el;
+                else if (order.status === 'delivered' || order.status === 'cancelled') colEl = columns['delivered'].el;
+                
+                colEl.appendChild(card);
+            });
+
+            // Update counts
+            document.getElementById('count-new').textContent = counts.new;
+            document.getElementById('count-preparing').textContent = counts.preparing;
+            document.getElementById('count-ready').textContent = counts.ready;
+            document.getElementById('count-completed').textContent = counts.completed;
+        }
+
+        function getPipelineActions(order) {
+            if (order.status === 'placed') {
+                return `
+                    <button class="btn btn-sm btn-primary w-full" onclick="advanceOrder('${order.id}', 'accepted')">Accept Order</button>
+                    <button class="btn btn-sm btn-danger" onclick="advanceOrder('${order.id}', 'cancelled')">Reject</button>
+                `;
+            } else if (order.status === 'accepted' || order.status === 'preparing') {
+                return `<button class="btn btn-sm btn-warning w-full" onclick="advanceOrder('${order.id}', 'packed')">Mark as Packed</button>`;
+            } else if (order.status === 'packed' || order.status === 'assigned') {
+                return `<button class="btn btn-sm btn-secondary w-full" disabled>Waiting for Rider...</button>`;
+            }
+            return `<span class="text-xs text-muted w-full text-center py-1">No actions needed</span>`;
+        }
+
+        function getStatusBadge(status) {
+            const map = {
+                'placed': '<span class="badge badge-primary">New</span>',
+                'accepted': '<span class="badge badge-info">Accepted</span>',
+                'preparing': '<span class="badge badge-warning">Preparing</span>',
+                'packed': '<span class="badge badge-purple">Packed</span>',
+                'assigned': '<span class="badge badge-info">Rider Assigned</span>',
+                'delivered': '<span class="badge badge-success">Delivered</span>',
+                'cancelled': '<span class="badge badge-danger">Cancelled</span>'
+            };
+            return map[status] || '<span class="badge badge-slate">Unknown</span>';
         }
 
         function renderInventory() {
-            return `
-                <h3 class="text-xl font-bold mb-4">Inventory</h3>
-                <div class="grid grid-cols-2 gap-3" id="invGrid"></div>
-            `;
+            const tbody = document.getElementById('inventory-table-body');
+            tbody.innerHTML = vendorDB.products.map(p => {
+                const isLow = p.stock <= p.minStock;
+                return `
+                    <tr>
+                        <td class="font-semibold">${p.name}</td>
+                        <td class="text-muted text-sm">${p.sku}</td>
+                        <td>${p.category}</td>
+                        <td>
+                            <div class="flex items-center gap-2">
+                                <div class="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                    <div class="h-full ${isLow ? 'bg-danger' : 'bg-success'}" style="width: ${Math.min(100, (p.stock / (p.minStock * 3)) * 100)}%"></div>
+                                </div>
+                                <span class="text-sm font-medium ${isLow ? 'text-danger' : ''}">${p.stock}</span>
+                            </div>
+                        </td>
+                        <td>${isLow ? '<span class="badge badge-danger">Low Stock</span>' : '<span class="badge badge-success">In Stock</span>'}</td>
+                        <td>
+                            <button class="btn btn-sm btn-secondary" onclick="showToast('info', 'Inventory', 'Restock modal opened for ${p.name}')">Restock</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         function renderProducts() {
-            return `
-                <h3 class="text-xl font-bold mb-4">Product Catalog</h3>
-                <div class="card p-4 mb-3 flex justify-between items-center">
-                    <div>
-                        <p class="font-medium">Amul Gold Milk</p>
-                        <p class="text-sm text-slate-500">₹65 · 500 ml</p>
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = vendorDB.products.map(p => `
+                <div class="card card-hover">
+                    <div class="h-32 bg-gray-100 rounded-t-xl flex items-center justify-center text-4xl">
+                        ${getCategoryEmoji(p.category)}
                     </div>
-                    <span class="badge badge-blue">Active</span>
-                </div>
-                <div class="card p-4 mb-3 flex justify-between items-center">
-                    <div>
-                        <p class="font-medium">Brown Bread</p>
-                        <p class="text-sm text-slate-500">₹45 · 400g</p>
-                    </div>
-                    <span class="badge badge-blue">Active</span>
-                </div>
-                <div class="card p-4 mb-3 flex justify-between items-center">
-                    <div>
-                        <p class="font-medium">Organic Eggs</p>
-                        <p class="text-sm text-slate-500">₹80 · 6 pcs</p>
-                    </div>
-                    <span class="badge badge-blue">Active</span>
-                </div>
-                <button class="btn btn-outline btn-sm mt-2"><i class="fa-solid fa-plus"></i> Add Product (simulated)</button>
-            `;
-        }
-
-        function renderPromotions() {
-            return `
-                <h3 class="text-xl font-bold mb-4">Promotions</h3>
-                <div class="card p-4 mb-3">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <p class="font-medium">🎟️ 10% off on Milk</p>
-                            <p class="text-sm text-slate-500">Coupon: SAVE10</p>
+                    <div class="p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-bold truncate">${p.name}</h4>
+                            <span class="badge badge-slate">${p.category}</span>
                         </div>
-                        <span class="badge badge-green">Active</span>
-                    </div>
-                </div>
-                <div class="card p-4">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <p class="font-medium">🎁 Buy 1 Get 1 Free – Bread</p>
-                            <p class="text-sm text-slate-500">Limited time</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-lg font-bold text-primary">₹${p.price}</span>
+                            <span class="text-sm text-muted">SKU: ${p.sku}</span>
                         </div>
-                        <span class="badge badge-amber">Scheduled</span>
+                        <div class="flex gap-2">
+                            <button class="btn btn-sm btn-secondary flex-1">Edit</button>
+                            <button class="btn btn-sm btn-primary flex-1">View</button>
+                        </div>
                     </div>
                 </div>
-            `;
-        }
-
-        function renderAnalytics() {
-            return `
-                <h3 class="text-xl font-bold mb-4">Analytics</h3>
-                <div class="card p-6 text-center">
-                    <i class="fa-solid fa-chart-bar text-4xl text-slate-300 mb-3 block"></i>
-                    <p class="text-slate-500">Sales chart (simulated)</p>
-                    <p class="text-sm text-slate-400 mt-2">Revenue, orders, and customer trends</p>
-                </div>
-            `;
+            `).join('');
         }
 
         function renderFinance() {
-            return `
-                <h3 class="text-xl font-bold mb-4">Finance</h3>
-                <div class="card p-4 mb-3">
-                    <p class="font-medium">Settlements</p>
-                    <p class="text-sm text-slate-500">Next payout: ₹12,500 (in 2 days)</p>
-                </div>
-                <div class="card p-4 mb-3">
-                    <p class="font-medium">GST & Taxes</p>
-                    <p class="text-sm text-slate-500">Simulated tax reports</p>
-                </div>
-            `;
+            const tbody = document.getElementById('finance-table-body');
+            tbody.innerHTML = vendorDB.transactions.map(t => `
+                <tr>
+                    <td class="font-mono text-sm">${t.id}</td>
+                    <td class="text-sm text-muted">${t.date}</td>
+                    <td>${t.desc}</td>
+                    <td>
+                        <span class="badge ${t.type === 'credit' ? 'badge-success' : 'badge-danger'}">
+                            ${t.type === 'credit' ? 'Credit' : 'Debit'}
+                        </span>
+                    </td>
+                    <td class="font-bold ${t.type === 'credit' ? 'text-success' : 'text-danger'}">
+                        ${t.type === 'credit' ? '+' : '-'}₹${t.amount}
+                    </td>
+                </tr>
+            `).join('');
         }
 
-        function renderTeam() {
-            return `
-                <h3 class="text-xl font-bold mb-4">Team</h3>
-                <div class="card p-4 mb-2 flex justify-between">
-                    <span>👤 Rajesh Kumar (Owner)</span><span class="badge badge-purple">Admin</span>
-                </div>
-                <div class="card p-4 mb-2 flex justify-between">
-                    <span>👤 Priya Singh (Staff)</span><span class="badge badge-blue">Packer</span>
-                </div>
-            `;
+        function getCategoryEmoji(cat) {
+            const map = { 'Dairy': '🥛', 'Bakery': '🍞', 'Fruits': '🍎', 'Vegetables': '🍅', 'Beverages': '🥤', 'Snacks': '🍪' };
+            return map[cat] || '📦';
         }
 
-        function renderMarketing() {
-            return `
-                <h3 class="text-xl font-bold mb-4">Marketing</h3>
-                <div class="card p-4 mb-3">
-                    <p class="font-medium">📢 Push Campaign</p>
-                    <p class="text-sm text-slate-500">Sent: "Flash Sale Live!" – 1200 impressions</p>
-                </div>
-                <div class="card p-4">
-                    <p class="font-medium">📧 Email Campaign</p>
-                    <p class="text-sm text-slate-500">Sent: Weekly offers – 45% open rate</p>
-                </div>
-            `;
-        }
-
-        function renderReviews() {
-            return `
-                <h3 class="text-xl font-bold mb-4">Customer Reviews</h3>
-                <div class="card p-4 mb-2">
-                    <div class="flex justify-between">
-                        <span>⭐ 4.8</span><span class="text-sm text-slate-500">12 reviews</span>
-                    </div>
-                </div>
-                <div class="card p-4 mb-2">
-                    <p class="font-medium">Amul Gold Milk</p>
-                    <p class="text-sm">"Great quality!" - Ramesh</p>
-                </div>
-            `;
-        }
-
-        // Update UI with shared state
-        window.updateUI = function(s) {
-            // Update Dashboard stats if visible
-            if (currentTab === 'dashboard' || currentTab === 'orders') {
-                const ordersEl = document.getElementById('vendorOrderList');
-                if (ordersEl) {
-                    ordersEl.innerHTML = s.vendorOrders.length === 0
-                        ? '<p class="text-slate-400 text-center py-4">No orders yet.</p>'
-                        : s.vendorOrders.slice(-10).reverse().map(o => `
-                            <div class="card p-3 flex justify-between items-center">
-                                <div>
-                                    <p class="font-medium">${o.product}</p>
-                                    <p class="text-xs text-slate-500">#${o.id} · ${o.time}</p>
-                                </div>
-                                <span class="badge ${o.status==='placed'?'badge-amber':o.status==='delivered'?'badge-green':'badge-blue'}">${o.status}</span>
-                            </div>
-                        `).join('');
+        // --- 4. ACTION HANDLERS ---
+        function advanceOrder(orderId, newStatus) {
+            if (typeof window.advanceOrder === 'function') {
+                // Use shared state.js function if available
+                // We need to temporarily set currentOrderId for the shared function to work
+                window.state.currentOrderId = orderId;
+                window.advanceOrder(newStatus);
+            } else {
+                // Fallback manual state update
+                const order = window.state.orders.find(o => o.id === orderId);
+                if (order) {
+                    order.status = newStatus;
+                    window.saveState();
+                    showToast('success', 'Order Updated', `Order ${orderId} is now ${newStatus}`);
                 }
-
-                document.getElementById('vOrders') && (document.getElementById('vOrders').innerText = s.vendorOrders.length);
-                document.getElementById('vRevenue') && (document.getElementById('vRevenue').innerText = '₹' + s.vendorOrders.reduce((sum,o)=>sum+o.price,0));
-                document.getElementById('vLive') && (document.getElementById('vLive').innerText = s.stats.liveOrders);
             }
+        }
 
-            // Inventory tab
-            if (currentTab === 'inventory') {
-                const invGrid = document.getElementById('invGrid');
-                if (invGrid) {
-                    invGrid.innerHTML = Object.entries(s.inventory).map(([item, qty]) => `
-                        <div class="card p-3 flex justify-between items-center">
-                            <span>${item}</span>
-                            <span class="badge ${qty<20?'badge-rose':'badge-green'}">${qty} units</span>
-                        </div>
-                    `).join('');
+        // --- 5. ROUTER ---
+        const router = {
+            navigate: (viewId) => {
+                document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                
+                const target = document.getElementById(`view-${viewId}`);
+                if (target) {
+                    target.classList.add('active');
+                    document.querySelector(`.nav-item[data-view="${viewId}"]`)?.classList.add('active');
+                    
+                    const titles = {
+                        'dashboard': 'Dashboard',
+                        'orders': 'Order Pipeline',
+                        'inventory': 'Inventory Management',
+                        'products': 'Product Catalog',
+                        'analytics': 'Performance Analytics',
+                        'finance': 'Financial Overview',
+                        'promotions': 'Promotions & Marketing',
+                        'team': 'Team Management',
+                        'settings': 'Store Settings'
+                    };
+                    document.getElementById('page-title').textContent = titles[viewId] || 'Dashboard';
+                    
+                    // Close mobile sidebar if open
+                    document.getElementById('sidebar').classList.remove('open');
                 }
             }
         };
 
-        // Initial load
-        switchVendorTab('dashboard');
-        updateUI(window.state);
+        // --- 6. TOAST NOTIFICATION SYSTEM ---
+        function showToast(type, title, message) {
+            const container = document.getElementById('toast-container');
+            const icons = {
+                'success': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>',
+                'error': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>',
+                'info': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>'
+            };
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `
+                <div class="toast-icon">${icons[type] || icons['info']}</div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="btn-icon" style="padding: 0.25rem;" onclick="this.parentElement.remove()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            `;
+            
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // --- 7. INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initVendorState();
+            
+            // Simulate a welcome toast
+            setTimeout(() => {
+                showToast('info', 'System Ready', 'Vendor panel connected to Local Commerce OS. Open customer.html in another tab to test real-time sync.');
+            }, 1000);
+        });
+
+        // Expose router globally for inline onclick handlers
+        window.router = router;
+        window.advanceOrder = advanceOrder;
+        window.showToast = showToast;
     </script>
 </body>
 </html>

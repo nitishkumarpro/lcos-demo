@@ -3,348 +3,1495 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🏛️ Admin Dashboard – LCOS</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="state.js"></script>
+    <meta name="theme-color" content="#09090b">
+    <title>Admin OS | Local Commerce OS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
     <style>
-        .admin-body { display: flex; height: 100vh; }
-        .sidebar { width: 260px; background: white; border-right: 1px solid #e2e8f0; overflow-y: auto; }
-        .main-content { flex: 1; overflow-y: auto; padding: 1.5rem; }
-        .kpi-card { background: white; border-radius: 1rem; padding: 1.25rem; border: 1px solid #e2e8f0; }
-        .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
-        .status-live { background: #10b981; }
-        .status-idle { background: #f59e0b; }
-        .status-offline { background: #ef4444; }
+        /* ==========================================================================
+           LOCAL COMMERCE OS - ADMIN OPERATING SYSTEM STYLESHEET
+           Enterprise-Grade SaaS Design System (Stripe/Linear inspired)
+           ========================================================================== */
+
+        :root {
+            /* Core Palette (High Contrast SaaS) */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --bg-elevated: #ffffff;
+            --bg-inverse: #09090b;
+            
+            --text-primary: #09090b;
+            --text-secondary: #475569;
+            --text-tertiary: #94a3b8;
+            --text-inverse: #ffffff;
+            
+            --border-primary: #e2e8f0;
+            --border-secondary: #f1f5f9;
+            --border-focus: #2563eb;
+
+            /* Brand & Semantic Colors */
+            --brand-primary: #2563eb;
+            --brand-primary-light: #3b82f6;
+            --brand-primary-bg: #eff6ff;
+            
+            --success: #16a34a;
+            --success-bg: #dcfce7;
+            --warning: #d97706;
+            --warning-bg: #fef3c7;
+            --danger: #dc2626;
+            --danger-bg: #fee2e2;
+            --info: #0284c7;
+            --info-bg: #e0f2fe;
+            --purple: #7c3aed;
+            --purple-bg: #f3e8ff;
+
+            /* Spacing & Layout */
+            --sidebar-width: 260px;
+            --header-height: 64px;
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-full: 9999px;
+
+            /* Shadows */
+            --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            --shadow-glow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+
+            /* Typography */
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+            /* Transitions */
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* --- 1. Global Reset & Base --- */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { font-size: 14px; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.5;
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- 2. Typography --- */
+        h1, h2, h3, h4, h5, h6 { font-weight: 600; line-height: 1.2; color: var(--text-primary); letter-spacing: -0.01em; }
+        h1 { font-size: 1.75rem; font-weight: 700; }
+        h2 { font-size: 1.375rem; }
+        h3 { font-size: 1.125rem; }
+        h4 { font-size: 1rem; }
+        p { color: var(--text-secondary); }
+        .text-sm { font-size: 0.875rem; }
+        .text-xs { font-size: 0.75rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-xl { font-size: 1.25rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .text-3xl { font-size: 1.875rem; }
+        .text-4xl { font-size: 2.25rem; }
+        .font-medium { font-weight: 500; }
+        .font-semibold { font-weight: 600; }
+        .font-bold { font-weight: 700; }
+        .font-black { font-weight: 900; }
+        .text-muted { color: var(--text-tertiary); }
+        .text-primary { color: var(--brand-primary); }
+        .text-success { color: var(--success); }
+        .text-danger { color: var(--danger); }
+        .text-warning { color: var(--warning); }
+        .font-mono { font-family: var(--font-mono); }
+        .truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* --- 3. Layout: Sidebar --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-primary);
+            border-right: 1px solid var(--border-primary);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 40;
+            transition: transform var(--transition-base);
+        }
+        .sidebar-header {
+            height: var(--header-height);
+            border-bottom: 1px solid var(--border-primary);
+            display: flex;
+            align-items: center;
+            padding: 0 1.25rem;
+            gap: 0.75rem;
+        }
+        .sidebar-logo {
+            width: 32px;
+            height: 32px;
+            background: var(--bg-inverse);
+            color: var(--text-inverse);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1rem;
+        }
+        .sidebar-title { font-weight: 700; font-size: 1rem; }
+        .sidebar-subtitle { font-size: 0.7rem; color: var(--text-tertiary); font-weight: 500; }
+        
+        .sidebar-nav { flex: 1; overflow-y: auto; padding: 1rem 0.75rem; }
+        .nav-group { margin-bottom: 1.5rem; }
+        .nav-group-title {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-tertiary);
+            padding: 0 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            margin-bottom: 2px;
+            text-decoration: none;
+            position: relative;
+        }
+        .nav-item:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+        .nav-item.active {
+            background: var(--brand-primary-bg);
+            color: var(--brand-primary);
+            font-weight: 600;
+        }
+        .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+        .nav-badge {
+            margin-left: auto;
+            background: var(--danger);
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 0.1rem 0.4rem;
+            border-radius: var(--radius-full);
+            min-width: 18px;
+            text-align: center;
+        }
+
+        /* --- 4. Layout: Main Content & Header --- */
+        .main-wrapper {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .top-header {
+            height: var(--header-height);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-primary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 30;
+        }
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-md);
+            padding: 0.4rem 0.75rem;
+            width: 320px;
+            transition: all var(--transition-fast);
+        }
+        .search-box:focus-within {
+            border-color: var(--brand-primary);
+            box-shadow: var(--shadow-glow);
+            background: var(--bg-primary);
+        }
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 0.875rem;
+            width: 100%;
+            color: var(--text-primary);
+        }
+        .search-box svg { color: var(--text-tertiary); width: 16px; height: 16px; }
+        
+        .header-actions { display: flex; align-items: center; gap: 0.75rem; }
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-primary);
+            background: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            position: relative;
+            color: var(--text-secondary);
+        }
+        .icon-btn:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+        .icon-btn svg { width: 18px; height: 18px; }
+        .icon-btn .dot {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 8px;
+            height: 8px;
+            background: var(--danger);
+            border-radius: 50%;
+            border: 2px solid var(--bg-primary);
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        /* --- 5. Components: Cards & Panels --- */
+        .card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xs);
+        }
+        .card-header {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .card-body { padding: 1.25rem; }
+        .card-footer {
+            padding: 0.75rem 1.25rem;
+            border-top: 1px solid var(--border-secondary);
+            background: var(--bg-secondary);
+            border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+        }
+
+        /* --- 6. Components: Buttons --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all var(--transition-fast);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn-primary { background: var(--brand-primary); color: white; }
+        .btn-primary:hover { background: var(--brand-primary-light); }
+        .btn-secondary { background: var(--bg-primary); border-color: var(--border-primary); color: var(--text-primary); }
+        .btn-secondary:hover { background: var(--bg-tertiary); }
+        .btn-ghost { background: transparent; color: var(--text-secondary); }
+        .btn-ghost:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.75rem; }
+        .btn svg { width: 16px; height: 16px; }
+
+        /* --- 7. Components: Badges & Status --- */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 0.2rem 0.6rem;
+            border-radius: var(--radius-full);
+            font-size: 0.7rem;
+            font-weight: 600;
+            line-height: 1;
+        }
+        .badge-blue { background: var(--brand-primary-bg); color: var(--brand-primary); }
+        .badge-green { background: var(--success-bg); color: var(--success); }
+        .badge-amber { background: var(--warning-bg); color: var(--warning); }
+        .badge-red { background: var(--danger-bg); color: var(--danger); }
+        .badge-purple { background: var(--purple-bg); color: var(--purple); }
+        .badge-gray { background: var(--bg-tertiary); color: var(--text-secondary); }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .status-dot.online { background: var(--success); box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.2); }
+        .status-dot.offline { background: var(--text-tertiary); }
+        .status-dot.busy { background: var(--warning); box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.2); }
+
+        /* --- 8. Components: Data Tables --- */
+        .table-container { overflow-x: auto; }
+        .table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+        .table th {
+            text-align: left;
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-primary);
+            white-space: nowrap;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .table td {
+            padding: 0.875rem 1rem;
+            border-bottom: 1px solid var(--border-secondary);
+            color: var(--text-primary);
+            vertical-align: middle;
+        }
+        .table tr:last-child td { border-bottom: none; }
+        .table tr:hover td { background: var(--bg-secondary); }
+        .table-cell-primary { font-weight: 600; }
+        .table-cell-secondary { color: var(--text-tertiary); font-size: 0.8rem; }
+
+        /* --- 9. Components: Stats & KPIs --- */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .kpi-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .kpi-header { display: flex; justify-content: space-between; align-items: center; }
+        .kpi-label { font-size: 0.8rem; font-weight: 500; color: var(--text-tertiary); }
+        .kpi-value { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.02em; }
+        .kpi-trend { font-size: 0.75rem; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+        .kpi-trend.up { color: var(--success); }
+        .kpi-trend.down { color: var(--danger); }
+
+        /* --- 10. Components: Charts (CSS/SVG based) --- */
+        .chart-container {
+            width: 100%;
+            height: 250px;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            gap: 4px;
+            padding: 1rem 0;
+        }
+        .chart-bar {
+            flex: 1;
+            background: var(--brand-primary-bg);
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            transition: all var(--transition-base);
+            cursor: pointer;
+        }
+        .chart-bar:hover { background: var(--brand-primary); }
+        .chart-bar::after {
+            content: attr(data-value);
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+        }
+        .chart-bar:hover::after { opacity: 1; }
+
+        /* Line Chart Simulation */
+        .line-chart {
+            width: 100%;
+            height: 200px;
+            position: relative;
+            border-bottom: 1px solid var(--border-primary);
+            border-left: 1px solid var(--border-primary);
+        }
+        .line-chart svg { width: 100%; height: 100%; }
+
+        /* --- 11. Components: Live Map Simulation --- */
+        .live-map {
+            width: 100%;
+            height: 300px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-primary);
+        }
+        .map-grid {
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(226, 232, 240, 0.5) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(226, 232, 240, 0.5) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .map-pin {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            border-radius: 50% 50% 50% 0;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-md);
+            border: 2px solid white;
+        }
+        .map-pin.store { background: var(--brand-primary); }
+        .map-pin.rider { background: var(--success); animation: pulse-pin 2s infinite; }
+        .map-pin.customer { background: var(--danger); }
+        
+        @keyframes pulse-pin {
+            0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(22, 163, 74, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+        }
+
+        /* --- 12. Components: Activity Feed --- */
+        .activity-feed { display: flex; flex-direction: column; }
+        .activity-item {
+            display: flex;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-secondary);
+        }
+        .activity-item:last-child { border-bottom: none; }
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .activity-content { flex: 1; }
+        .activity-text { font-size: 0.875rem; color: var(--text-primary); }
+        .activity-text strong { font-weight: 600; }
+        .activity-time { font-size: 0.75rem; color: var(--text-tertiary); margin-top: 2px; }
+
+        /* --- 13. Components: AI Center --- */
+        .ai-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+            border: 1px solid #bfdbfe;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .ai-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(37,99,235,0.1) 0%, transparent 70%);
+        }
+        .ai-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--brand-primary);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: var(--radius-full);
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        /* --- 14. View Management --- */
+        .view { display: none; animation: fadeIn 0.3s ease; }
+        .view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- 15. Utilities --- */
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .gap-1 { gap: 0.25rem; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
+        .gap-4 { gap: 1rem; }
+        .gap-6 { gap: 1.5rem; }
+        .w-full { width: 100%; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-4 { margin-top: 1rem; }
+        .p-4 { padding: 1rem; }
+        .p-6 { padding: 1.5rem; }
+        .grid { display: grid; }
+        .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+        .hidden { display: none !important; }
+
+        /* --- 16. Scrollbar --- */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* --- 17. Responsive --- */
+        @media (max-width: 1024px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-wrapper { margin-left: 0; }
+        }
     </style>
 </head>
-<body class="admin-body">
+<body>
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-        <div class="p-4 border-b">
-            <h2 class="font-bold text-rose-600 text-lg"><i class="fa-solid fa-building-columns"></i> Admin</h2>
-            <p class="text-xs text-slate-500">Super Admin</p>
+    <!-- ==========================================================================
+         SIDEBAR NAVIGATION
+         ========================================================================== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">LC</div>
+            <div>
+                <div class="sidebar-title">Local Commerce</div>
+                <div class="sidebar-subtitle">Admin Operating System</div>
+            </div>
         </div>
-        <nav class="p-2 space-y-1">
-            <div onclick="switchAdminTab('executive')" class="sidebar-item active" data-atab="executive">
-                <i class="fa-solid fa-gauge-high sidebar-icon"></i> Executive
+
+        <nav class="sidebar-nav">
+            <div class="nav-group">
+                <div class="nav-group-title">Overview</div>
+                <a class="nav-item active" data-view="dashboard" onclick="router.navigate('dashboard')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    Executive Dashboard
+                </a>
+                <a class="nav-item" data-view="live-ops" onclick="router.navigate('live-ops')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    Live Operations
+                    <span class="nav-badge" id="nav-live-badge">0</span>
+                </a>
             </div>
-            <div onclick="switchAdminTab('customers')" class="sidebar-item" data-atab="customers">
-                <i class="fa-solid fa-users sidebar-icon"></i> Customers
+
+            <div class="nav-group">
+                <div class="nav-group-title">Marketplace</div>
+                <a class="nav-item" data-view="orders" onclick="router.navigate('orders')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                    Order Management
+                </a>
+                <a class="nav-item" data-view="catalog" onclick="router.navigate('catalog')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line></svg>
+                    Catalog & Inventory
+                </a>
+                <a class="nav-item" data-view="users" onclick="router.navigate('users')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                    Users (Customers/Vendors)
+                </a>
+                <a class="nav-item" data-view="fleet" onclick="router.navigate('fleet')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                    Fleet & Logistics
+                </a>
             </div>
-            <div onclick="switchAdminTab('vendors')" class="sidebar-item" data-atab="vendors">
-                <i class="fa-solid fa-store sidebar-icon"></i> Vendors
+
+            <div class="nav-group">
+                <div class="nav-group-title">Business</div>
+                <a class="nav-item" data-view="finance" onclick="router.navigate('finance')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    Finance & Payouts
+                </a>
+                <a class="nav-item" data-view="marketing" onclick="router.navigate('marketing')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                    Marketing & CRM
+                </a>
+                <a class="nav-item" data-view="analytics" onclick="router.navigate('analytics')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                    Analytics & BI
+                </a>
             </div>
-            <div onclick="switchAdminTab('riders')" class="sidebar-item" data-atab="riders">
-                <i class="fa-solid fa-motorcycle sidebar-icon"></i> Riders
-            </div>
-            <div onclick="switchAdminTab('catalog')" class="sidebar-item" data-atab="catalog">
-                <i class="fa-solid fa-box sidebar-icon"></i> Catalog
-            </div>
-            <div onclick="switchAdminTab('orders')" class="sidebar-item" data-atab="orders">
-                <i class="fa-solid fa-cart-shopping sidebar-icon"></i> Orders
-            </div>
-            <div onclick="switchAdminTab('logistics')" class="sidebar-item" data-atab="logistics">
-                <i class="fa-solid fa-truck sidebar-icon"></i> Logistics
-            </div>
-            <div onclick="switchAdminTab('marketing')" class="sidebar-item" data-atab="marketing">
-                <i class="fa-solid fa-bullhorn sidebar-icon"></i> Marketing
-            </div>
-            <div onclick="switchAdminTab('finance')" class="sidebar-item" data-atab="finance">
-                <i class="fa-solid fa-coins sidebar-icon"></i> Finance
-            </div>
-            <div onclick="switchAdminTab('crm')" class="sidebar-item" data-atab="crm">
-                <i class="fa-solid fa-headset sidebar-icon"></i> CRM
-            </div>
-            <div onclick="switchAdminTab('analytics')" class="sidebar-item" data-atab="analytics">
-                <i class="fa-solid fa-chart-pie sidebar-icon"></i> Analytics
-            </div>
-            <div onclick="switchAdminTab('ai')" class="sidebar-item" data-atab="ai">
-                <i class="fa-solid fa-robot sidebar-icon"></i> AI Center
-            </div>
-            <div onclick="switchAdminTab('cms')" class="sidebar-item" data-atab="cms">
-                <i class="fa-solid fa-file-lines sidebar-icon"></i> CMS
-            </div>
-            <div onclick="switchAdminTab('system')" class="sidebar-item" data-atab="system">
-                <i class="fa-solid fa-gear sidebar-icon"></i> System
+
+            <div class="nav-group">
+                <div class="nav-group-title">System</div>
+                <a class="nav-item" data-view="ai-center" onclick="router.navigate('ai-center')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path><path d="M12 2a10 10 0 0 1 10 10"></path></svg>
+                    AI Command Center
+                    <span class="badge badge-blue" style="margin-left: auto; font-size: 0.6rem;">BETA</span>
+                </a>
+                <a class="nav-item" data-view="settings" onclick="router.navigate('settings')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    System Settings
+                </a>
             </div>
         </nav>
+
+        <div style="padding: 1rem; border-top: 1px solid var(--border-primary);">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-inverse flex items-center justify-center text-white font-bold text-xs">SA</div>
+                <div class="flex-1 min-w-0">
+                    <div class="font-semibold text-sm truncate">Super Admin</div>
+                    <div class="text-xs text-muted truncate">admin@lcos.io</div>
+                </div>
+            </div>
+        </div>
     </aside>
 
-    <!-- MAIN CONTENT -->
-    <main class="main-content" id="adminContent">
-        <!-- Rendered by JS -->
-    </main>
+    <!-- ==========================================================================
+         MAIN CONTENT
+         ========================================================================== -->
+    <main class="main-wrapper">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="flex items-center gap-4">
+                <button class="icon-btn" style="display: none;" onclick="document.getElementById('sidebar').classList.toggle('open')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
+                <div class="search-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" placeholder="Search orders, users, transactions... (⌘K)">
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn" title="Environment">
+                    <span class="badge badge-green" style="font-size: 0.6rem;">PROD</span>
+                </button>
+                <button class="icon-btn" title="Notifications">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                    <span class="dot"></span>
+                </button>
+                <button class="btn btn-primary btn-sm">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    Export Data
+                </button>
+            </div>
+        </header>
 
-    <script>
-        let currentTab = 'executive';
+        <!-- Content Area -->
+        <div class="content-area">
+            
+            <!-- VIEW: EXECUTIVE DASHBOARD -->
+            <div id="view-dashboard" class="view active">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h1 class="text-2xl mb-1">Executive Dashboard</h1>
+                        <p class="text-sm text-muted">Real-time overview of the Local Commerce ecosystem.</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="btn btn-secondary btn-sm">Last 24 Hours</button>
+                        <button class="btn btn-secondary btn-sm">Custom Range</button>
+                    </div>
+                </div>
 
-        function switchAdminTab(tab) {
-            currentTab = tab;
-            renderAdminTab(tab);
-            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
-            const activeEl = document.querySelector(`.sidebar-item[data-atab="${tab}"]`);
-            if (activeEl) activeEl.classList.add('active');
-        }
+                <!-- KPI Grid -->
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-label">Gross Merchandise Value (GMV)</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                        </div>
+                        <div class="kpi-value" id="kpi-gmv">₹2,45,000</div>
+                        <div class="kpi-trend up">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                            12.5% vs yesterday
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-label">Live Orders</span>
+                            <span class="status-dot online"></span>
+                        </div>
+                        <div class="kpi-value" id="kpi-live-orders">0</div>
+                        <div class="kpi-trend up">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                            Active right now
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-label">Active Riders</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect></svg>
+                        </div>
+                        <div class="kpi-value">42</div>
+                        <div class="kpi-trend down">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>
+                            3 offline
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-label">Avg. Delivery Time</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        </div>
+                        <div class="kpi-value">24m</div>
+                        <div class="kpi-trend up">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                            2m faster
+                        </div>
+                    </div>
+                </div>
 
-        function renderAdminTab(tab) {
-            const container = document.getElementById('adminContent');
-            switch (tab) {
-                case 'executive': container.innerHTML = renderExecutive(); break;
-                case 'customers': container.innerHTML = renderCustomers(); break;
-                case 'vendors': container.innerHTML = renderVendors(); break;
-                case 'riders': container.innerHTML = renderRiders(); break;
-                case 'catalog': container.innerHTML = renderCatalog(); break;
-                case 'orders': container.innerHTML = renderOrders(); break;
-                case 'logistics': container.innerHTML = renderLogistics(); break;
-                case 'marketing': container.innerHTML = renderMarketing(); break;
-                case 'finance': container.innerHTML = renderFinance(); break;
-                case 'crm': container.innerHTML = renderCRM(); break;
-                case 'analytics': container.innerHTML = renderAnalytics(); break;
-                case 'ai': container.innerHTML = renderAI(); break;
-                case 'cms': container.innerHTML = renderCMS(); break;
-                case 'system': container.innerHTML = renderSystem(); break;
-            }
-            updateUI(window.state);
-        }
+                <!-- Charts & Map Row -->
+                <div class="grid grid-cols-3 gap-4 mb-6">
+                    <!-- Revenue Chart -->
+                    <div class="card" style="grid-column: span 2;">
+                        <div class="card-header">
+                            <h3 class="font-semibold">Revenue Trend (Last 14 Days)</h3>
+                            <div class="flex gap-2">
+                                <button class="btn btn-ghost btn-sm">Revenue</button>
+                                <button class="btn btn-ghost btn-sm">Orders</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container" id="revenue-chart">
+                                <!-- Bars generated by JS -->
+                            </div>
+                        </div>
+                    </div>
 
-        function renderExecutive() {
-            return `
-                <h3 class="text-xl font-bold mb-4">Executive Dashboard</h3>
+                    <!-- Live Map -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="font-semibold">Live Fleet Map</h3>
+                            <span class="badge badge-green">Live</span>
+                        </div>
+                        <div class="card-body p-0" style="height: 250px;">
+                            <div class="live-map">
+                                <div class="map-grid"></div>
+                                <div class="map-pin store" style="top: 40%; left: 30%;"></div>
+                                <div class="map-pin rider" style="top: 50%; left: 45%;"></div>
+                                <div class="map-pin customer" style="top: 60%; left: 70%;"></div>
+                                <div class="map-pin rider" style="top: 30%; left: 60%;"></div>
+                                <div class="map-pin rider" style="top: 70%; left: 20%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity & AI Insights -->
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- Activity Feed -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="font-semibold">System Activity</h3>
+                            <button class="btn btn-ghost btn-sm">View All</button>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="activity-feed" id="activity-feed">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Insights -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="font-semibold">AI Command Center</h3>
+                            <span class="badge badge-blue">Active</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="ai-card mb-4">
+                                <div class="ai-badge">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path></svg>
+                                    DEMAND FORECAST
+                                </div>
+                                <h4 class="font-semibold mb-1">Milk & Bread Spike Predicted</h4>
+                                <p class="text-sm text-muted mb-3">AI models predict a 22% surge in dairy demand tomorrow morning due to weather patterns. Auto-replenishment triggered for 3 dark stores.</p>
+                                <button class="btn btn-primary btn-sm">Review Forecast</button>
+                            </div>
+                            <div class="ai-card">
+                                <div class="ai-badge" style="background: var(--danger);">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                                    FRAUD DETECTION
+                                </div>
+                                <h4 class="font-semibold mb-1">Anomaly Detected: Coupon Abuse</h4>
+                                <p class="text-sm text-muted mb-3">Blocked 14 suspicious transactions using 'SAVE50' code from IP cluster 192.168.x.x. Estimated loss prevented: ₹4,200.</p>
+                                <button class="btn btn-secondary btn-sm">View Report</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: LIVE OPERATIONS -->
+            <div id="view-live-ops" class="view">
+                <h1 class="text-2xl mb-1">Live Operations Center</h1>
+                <p class="text-sm text-muted mb-6">Real-time monitoring of all active orders and fleet movements.</p>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="font-semibold">Active Orders Pipeline</h3>
+                        <div class="flex gap-2">
+                            <span class="badge badge-blue">Placed: <span id="live-count-placed">0</span></span>
+                            <span class="badge badge-amber">Preparing: <span id="live-count-prep">0</span></span>
+                            <span class="badge badge-purple">Out for Delivery: <span id="live-count-delivery">0</span></span>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Vendor</th>
+                                    <th>Rider</th>
+                                    <th>Items</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>ETA</th>
+                                </tr>
+                            </thead>
+                            <tbody id="live-orders-table">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: ORDER MANAGEMENT -->
+            <div id="view-orders" class="view">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h1 class="text-2xl mb-1">Order Management</h1>
+                        <p class="text-sm text-muted">Manage, track, and resolve all marketplace orders.</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="btn btn-secondary btn-sm">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                            Filters
+                        </button>
+                        <button class="btn btn-primary btn-sm">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            Export CSV
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox"></th>
+                                    <th>Order ID</th>
+                                    <th>Date & Time</th>
+                                    <th>Customer</th>
+                                    <th>Vendor</th>
+                                    <th>Amount</th>
+                                    <th>Payment</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-table-body">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer flex justify-between items-center">
+                        <span class="text-sm text-muted">Showing 1 to 10 of 245 results</span>
+                        <div class="flex gap-2">
+                            <button class="btn btn-secondary btn-sm" disabled>Previous</button>
+                            <button class="btn btn-secondary btn-sm">1</button>
+                            <button class="btn btn-primary btn-sm">2</button>
+                            <button class="btn btn-secondary btn-sm">3</button>
+                            <button class="btn btn-secondary btn-sm">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: USERS (Customers/Vendors) -->
+            <div id="view-users" class="view">
+                <h1 class="text-2xl mb-6">User Management</h1>
+                <div class="grid grid-cols-3 gap-4 mb-6">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Total Customers</div>
+                        <div class="kpi-value">12,450</div>
+                        <div class="kpi-trend up">↑ 340 this week</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Active Vendors</div>
+                        <div class="kpi-value">142</div>
+                        <div class="kpi-trend up">↑ 5 this week</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Pending KYC</div>
+                        <div class="kpi-value text-warning">18</div>
+                        <div class="kpi-trend down">Requires attention</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="font-semibold">Vendor Directory</h3>
+                        <button class="btn btn-primary btn-sm">Add Vendor</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Store Name</th>
+                                    <th>Owner</th>
+                                    <th>Category</th>
+                                    <th>Orders (30d)</th>
+                                    <th>Revenue (30d)</th>
+                                    <th>Rating</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="table-cell-primary">QuickMart</td>
+                                    <td>Rahul Sharma</td>
+                                    <td><span class="badge badge-gray">Grocery</span></td>
+                                    <td>1,240</td>
+                                    <td>₹3,45,000</td>
+                                    <td>⭐ 4.8</td>
+                                    <td><span class="badge badge-green">Active</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="table-cell-primary">Fresh Bites</td>
+                                    <td>Priya Patel</td>
+                                    <td><span class="badge badge-gray">Healthy Food</span></td>
+                                    <td>850</td>
+                                    <td>₹2,10,000</td>
+                                    <td>⭐ 4.6</td>
+                                    <td><span class="badge badge-green">Active</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="table-cell-primary">MediPlus</td>
+                                    <td>Dr. Arjun Singh</td>
+                                    <td><span class="badge badge-gray">Pharmacy</span></td>
+                                    <td>420</td>
+                                    <td>₹1,25,000</td>
+                                    <td>⭐ 4.9</td>
+                                    <td><span class="badge badge-green">Active</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: FLEET & LOGISTICS -->
+            <div id="view-fleet" class="view">
+                <h1 class="text-2xl mb-6">Fleet & Logistics</h1>
                 <div class="grid grid-cols-4 gap-4 mb-6">
                     <div class="kpi-card">
-                        <p class="text-slate-500 text-sm">Total Orders</p>
-                        <p class="text-2xl font-bold" id="aOrders">0</p>
+                        <div class="kpi-label">Total Riders</div>
+                        <div class="kpi-value">150</div>
                     </div>
                     <div class="kpi-card">
-                        <p class="text-slate-500 text-sm">Revenue</p>
-                        <p class="text-2xl font-bold" id="aRevenue">₹0</p>
+                        <div class="kpi-label">Online Now</div>
+                        <div class="kpi-value text-success">42</div>
                     </div>
                     <div class="kpi-card">
-                        <p class="text-slate-500 text-sm">Live Orders</p>
-                        <div class="flex items-center gap-2">
-                            <span class="status-dot status-live"></span>
-                            <span class="text-2xl font-bold" id="aLive">0</span>
-                        </div>
+                        <div class="kpi-label">On Delivery</div>
+                        <div class="kpi-value text-primary">28</div>
                     </div>
                     <div class="kpi-card">
-                        <p class="text-slate-500 text-sm">Active Riders</p>
-                        <p class="text-2xl font-bold" id="aRiders">1</p>
+                        <div class="kpi-label">Avg Rating</div>
+                        <div class="kpi-value">4.7</div>
                     </div>
                 </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="font-semibold">Dark Store Network</h3>
+                    </div>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Store ID</th>
+                                    <th>Location</th>
+                                    <th>Manager</th>
+                                    <th>Active Riders</th>
+                                    <th>Orders Today</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="font-mono text-sm">DS-001</td>
+                                    <td>Koramangala, Bangalore</td>
+                                    <td>Amit Verma</td>
+                                    <td>12</td>
+                                    <td>340</td>
+                                    <td><span class="badge badge-green">Operational</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-sm">DS-002</td>
+                                    <td>Indiranagar, Bangalore</td>
+                                    <td>Sneha Reddy</td>
+                                    <td>8</td>
+                                    <td>210</td>
+                                    <td><span class="badge badge-green">Operational</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-sm">DS-003</td>
+                                    <td>HSR Layout, Bangalore</td>
+                                    <td>Vikram Joshi</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td><span class="badge badge-amber">Maintenance</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: FINANCE -->
+            <div id="view-finance" class="view">
+                <h1 class="text-2xl mb-6">Finance & Payouts</h1>
+                <div class="grid grid-cols-3 gap-4 mb-6">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Total Revenue (MTD)</div>
+                        <div class="kpi-value">₹12,45,000</div>
+                        <div class="kpi-trend up">↑ 15% vs last month</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Platform Commission</div>
+                        <div class="kpi-value">₹1,86,750</div>
+                        <div class="text-xs text-muted mt-2">15% average take rate</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Pending Payouts</div>
+                        <div class="kpi-value text-warning">₹45,200</div>
+                        <div class="text-xs text-muted mt-2">To 12 vendors</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="font-semibold">Recent Transactions</h3>
+                        <button class="btn btn-secondary btn-sm">Download Statement</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th>Date</th>
+                                    <th>Entity</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="font-mono text-sm">TXN-9921-A</td>
+                                    <td>Today, 10:30 AM</td>
+                                    <td>QuickMart</td>
+                                    <td><span class="badge badge-green">Payout</span></td>
+                                    <td class="font-semibold">- ₹12,450</td>
+                                    <td><span class="badge badge-green">Success</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-sm">TXN-9920-B</td>
+                                    <td>Today, 09:15 AM</td>
+                                    <td>Rider #RID-9876</td>
+                                    <td><span class="badge badge-blue">Incentive</span></td>
+                                    <td class="font-semibold">- ₹150</td>
+                                    <td><span class="badge badge-green">Success</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-sm">TXN-9919-C</td>
+                                    <td>Yesterday, 06:00 PM</td>
+                                    <td>Customer #CUS-4421</td>
+                                    <td><span class="badge badge-red">Refund</span></td>
+                                    <td class="font-semibold">- ₹65</td>
+                                    <td><span class="badge badge-green">Success</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: ANALYTICS -->
+            <div id="view-analytics" class="view">
+                <h1 class="text-2xl mb-6">Analytics & Business Intelligence</h1>
                 <div class="grid grid-cols-2 gap-4 mb-6">
-                    <div class="kpi-card">
-                        <p class="text-slate-500 text-sm">Avg Delivery Time</p>
-                        <p class="text-xl font-bold" id="aAvgTime">24 min</p>
-                    </div>
-                    <div class="kpi-card">
-                        <p class="text-slate-500 text-sm">Cancellation Rate</p>
-                        <p class="text-xl font-bold" id="aCancelRate">3.2%</p>
-                    </div>
-                </div>
-                <h4 class="font-semibold mb-2">Live Activity Feed</h4>
-                <div id="adminFeed" class="space-y-2"></div>
-            `;
-        }
-
-        function renderCustomers() {
-            return `
-                <h3 class="text-xl font-bold mb-4">Customer Management</h3>
-                <div class="card p-4 mb-3">
-                    <p class="font-medium">Total Customers</p>
-                    <p class="text-2xl font-bold">1,240</p>
-                </div>
-                <div class="card p-4">
-                    <p class="font-medium">Segments</p>
-                    <div class="flex gap-2 mt-2">
-                        <span class="badge badge-blue">New (340)</span>
-                        <span class="badge badge-amber">Regular (670)</span>
-                        <span class="badge badge-purple">VIP (230)</span>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderVendors() {
-            return `
-                <h3 class="text-xl font-bold mb-4">Vendor Management</h3>
-                <div class="card p-4 mb-3 flex justify-between">
-                    <span>QuickMart Store</span>
-                    <span class="badge badge-green">Active</span>
-                </div>
-                <div class="card p-4 mb-3 flex justify-between">
-                    <span>FreshFarm Organics</span>
-                    <span class="badge badge-amber">Pending KYC</span>
-                </div>
-            `;
-        }
-
-        function renderRiders() {
-            return `
-                <h3 class="text-xl font-bold mb-4">Rider Management</h3>
-                <div class="card p-4 mb-3 flex justify-between">
-                    <span>RID-9876 (You)</span>
-                    <span class="badge badge-green">Active</span>
-                </div>
-                <div class="card p-4 flex justify-between">
-                    <span>RID-1234 (Arjun)</span>
-                    <span class="badge badge-slate">Offline</span>
-                </div>
-            `;
-        }
-
-        function renderCatalog() {
-            return `
-                <h3 class="text-xl font-bold mb-4">Product Catalog</h3>
-                <p class="text-slate-500">Categories, brands, products, pricing rules (simulated)</p>
-            `;
-        }
-
-        function renderOrders() {
-            return `
-                <h3 class="text-xl font-bold mb-4">Order Center</h3>
-                <div id="adminOrderList" class="space-y-2"></div>
-            `;
-        }
-
-        function renderLogistics() {
-            return `
-                <h3 class="text-xl font-bold mb-4">Logistics</h3>
-                <div class="card p-4 mb-3">
-                    <p class="font-medium">Dark Stores</p>
-                    <div id="darkStoreList" class="mt-2"></div>
-                </div>
-                <div class="card p-4">
-                    <p class="font-medium">Delivery Zones</p>
-                    <p class="text-sm text-slate-500">Koramangala, Indiranagar, MG Road</p>
-                </div>
-            `;
-        }
-
-        function renderMarketing() {
-            return `
-                <h3 class="text-xl font-bold mb-4">Marketing</h3>
-                <div class="card p-4 mb-3">
-                    <p class="font-medium">Active Campaigns</p>
-                    <div id="campaignList" class="mt-2"></div>
-                </div>
-            `;
-        }
-
-        function renderFinance() {
-            return `
-                <h3 class="text-xl font-bold mb-4">Finance</h3>
-                <div class="kpi-card mb-3"><p>Total Revenue</p><p class="text-xl font-bold" id="aRevenue">₹0</p></div>
-                <div class="card p-4">Payouts, Commissions, Taxes (simulated)</div>
-            `;
-        }
-
-        function renderCRM() {
-            return `
-                <h3 class="text-xl font-bold mb-4">Customer Relationship</h3>
-                <div class="card p-4">Tickets, Live Chat, Call Logs (simulated)</div>
-            `;
-        }
-
-        function renderAnalytics() {
-            return `
-                <h3 class="text-xl font-bold mb-4">Advanced Analytics</h3>
-                <div class="card p-4">Sales Funnels, Cohorts, LTV, CAC (simulated)</div>
-            `;
-        }
-
-        function renderAI() {
-            return `
-                <h3 class="text-xl font-bold mb-4">AI Center</h3>
-                <div class="grid grid-cols-3 gap-3">
-                    <div class="card p-3"><p>Demand Forecast</p><span class="badge badge-blue">AI</span></div>
-                    <div class="card p-3"><p>Inventory Prediction</p><span class="badge badge-blue">AI</span></div>
-                    <div class="card p-3"><p>Dynamic Pricing</p><span class="badge badge-blue">AI</span></div>
-                </div>
-            `;
-        }
-
-        function renderCMS() {
-            return `
-                <h3 class="text-xl font-bold mb-4">Content Management</h3>
-                <div class="card p-4">Banners, FAQs, Policies (simulated)</div>
-            `;
-        }
-
-        function renderSystem() {
-            return `
-                <h3 class="text-xl font-bold mb-4">System Settings</h3>
-                <div class="card p-4">Roles, Audit Logs, API Keys (simulated)</div>
-            `;
-        }
-
-        // Global update function
-        window.updateUI = function(s) {
-            // Executive KPIs
-            document.getElementById('aOrders') && (document.getElementById('aOrders').innerText = s.stats.totalOrders);
-            document.getElementById('aRevenue') && (document.getElementById('aRevenue').innerText = '₹' + s.stats.revenue);
-            document.getElementById('aLive') && (document.getElementById('aLive').innerText = s.stats.liveOrders);
-            document.getElementById('aRiders') && (document.getElementById('aRiders').innerText = s.riderAssigned ? '1' : '0');
-            document.getElementById('aAvgTime') && (document.getElementById('aAvgTime').innerText = s.stats.averageDeliveryTime + ' min');
-            document.getElementById('aCancelRate') && (document.getElementById('aCancelRate').innerText = s.stats.cancellationRate + '%');
-
-            // Activity feed
-            const feedDiv = document.getElementById('adminFeed');
-            if (feedDiv) {
-                feedDiv.innerHTML = s.orders.slice(-6).reverse().map(o => `
-                    <div class="flex justify-between items-center text-sm border-b pb-1">
-                        <span>${o.product} <span class="text-xs text-slate-500">#${o.id}</span></span>
-                        <span class="badge ${o.status==='delivered'?'badge-green':o.status==='cancelled'?'badge-rose':'badge-blue'}">${o.status}</span>
-                    </div>
-                `).join('');
-            }
-
-            // Orders list in Orders tab
-            if (currentTab === 'orders') {
-                const orderListDiv = document.getElementById('adminOrderList');
-                if (orderListDiv) {
-                    orderListDiv.innerHTML = s.orders.length === 0
-                        ? '<p class="text-slate-400">No orders yet.</p>'
-                        : s.orders.map(o => `
-                            <div class="card p-3 flex justify-between">
-                                <span>${o.product} #${o.id}</span>
-                                <span class="badge ${o.status==='delivered'?'badge-green':'badge-blue'}">${o.status}</span>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="font-semibold">Customer Retention Cohort</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center py-8 text-muted">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="mb-4"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                                <p>Interactive Cohort Analysis Heatmap</p>
                             </div>
-                        `).join('');
-                }
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="font-semibold">Conversion Funnel</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="flex flex-col gap-3">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-sm font-medium w-24">App Open</span>
+                                    <div class="flex-1 bg-tertiary rounded-full h-6 relative">
+                                        <div class="bg-primary h-6 rounded-full" style="width: 100%;"></div>
+                                        <span class="absolute right-2 top-1 text-xs font-bold text-white">12,450</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-sm font-medium w-24">Add to Cart</span>
+                                    <div class="flex-1 bg-tertiary rounded-full h-6 relative">
+                                        <div class="bg-primary h-6 rounded-full" style="width: 45%;"></div>
+                                        <span class="absolute right-2 top-1 text-xs font-bold text-white">5,602</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-sm font-medium w-24">Checkout</span>
+                                    <div class="flex-1 bg-tertiary rounded-full h-6 relative">
+                                        <div class="bg-primary h-6 rounded-full" style="width: 28%;"></div>
+                                        <span class="absolute right-2 top-1 text-xs font-bold text-white">3,486</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-sm font-medium w-24">Purchase</span>
+                                    <div class="flex-1 bg-tertiary rounded-full h-6 relative">
+                                        <div class="bg-success h-6 rounded-full" style="width: 22%;"></div>
+                                        <span class="absolute right-2 top-1 text-xs font-bold text-white">2,739</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: AI CENTER -->
+            <div id="view-ai-center" class="view">
+                <h1 class="text-2xl mb-1">AI Command Center</h1>
+                <p class="text-sm text-muted mb-6">Autonomous agents managing pricing, fraud, and logistics.</p>
+
+                <div class="grid grid-cols-3 gap-4 mb-6">
+                    <div class="ai-card">
+                        <div class="ai-badge">DYNAMIC PRICING</div>
+                        <h4 class="font-semibold mb-1">Surge Pricing Active</h4>
+                        <p class="text-sm text-muted">Applied 1.2x multiplier in Indiranagar due to high demand and low rider supply.</p>
+                    </div>
+                    <div class="ai-card">
+                        <div class="ai-badge" style="background: var(--success);">ROUTING OPTIMIZATION</div>
+                        <h4 class="font-semibold mb-1">Batching Efficiency</h4>
+                        <p class="text-sm text-muted">AI successfully batched 14 orders today, saving an estimated 45 rider minutes.</p>
+                    </div>
+                    <div class="ai-card">
+                        <div class="ai-badge" style="background: var(--danger);">FRAUD PREVENTION</div>
+                        <h4 class="font-semibold mb-1">Blocked 14 Attempts</h4>
+                        <p class="text-sm text-muted">Prevented coupon stacking abuse. Saved ₹4,200 in potential losses.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="font-semibold">AI Agent Logs</h3>
+                    </div>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <th>Agent</th>
+                                    <th>Action</th>
+                                    <th>Impact</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="font-mono text-sm">10:42:15</td>
+                                    <td><span class="badge badge-blue">Pricing</span></td>
+                                    <td>Increased delivery fee by ₹5 in Zone 4</td>
+                                    <td>+ ₹150 Revenue</td>
+                                    <td><span class="badge badge-green">Success</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-sm">10:38:02</td>
+                                    <td><span class="badge badge-purple">Routing</span></td>
+                                    <td>Batched Order #9920 with #9918</td>
+                                    <td>- 12 mins ETA</td>
+                                    <td><span class="badge badge-green">Success</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-sm">10:15:44</td>
+                                    <td><span class="badge badge-red">Fraud</span></td>
+                                    <td>Blocked User #CUS-8832 for card testing</td>
+                                    <td>Prevented Fraud</td>
+                                    <td><span class="badge badge-green">Success</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Placeholder Views -->
+            <div id="view-catalog" class="view"><h1 class="text-2xl mb-6">Catalog & Inventory</h1><div class="card p-6 text-center text-muted">Master catalog management across all dark stores.</div></div>
+            <div id="view-marketing" class="view"><h1 class="text-2xl mb-6">Marketing & CRM</h1><div class="card p-6 text-center text-muted">Manage campaigns, push notifications, and user segments.</div></div>
+            <div id="view-settings" class="view"><h1 class="text-2xl mb-6">System Settings</h1><div class="card p-6 text-center text-muted">Configure taxes, currencies, feature flags, and API keys.</div></div>
+
+        </div>
+    </main>
+
+    <!-- ==========================================================================
+         JAVASCRIPT: ADMIN LOGIC & REAL-TIME SYNC
+         ========================================================================== -->
+    <script>
+        /**
+         * LOCAL COMMERCE OS - ADMIN OPERATING SYSTEM CONTROLLER
+         * Handles enterprise UI, real-time data sync, and chart rendering.
+         */
+
+        // --- 1. STATE SYNCHRONIZATION ---
+        function initAdminState() {
+            if (!window.state) {
+                window.state = JSON.parse(localStorage.getItem('lcos_state')) || {
+                    orders: [], stats: { totalOrders: 0, revenue: 0, liveOrders: 0 }, adminMetrics: { gmv: 245000 }
+                };
             }
 
-            // Dark stores
-            if (currentTab === 'logistics') {
-                const storeDiv = document.getElementById('darkStoreList');
-                if (storeDiv && s.darkStores) {
-                    storeDiv.innerHTML = s.darkStores.map(ds => `
-                        <div class="flex justify-between text-sm py-1">
-                            <span>${ds.name}</span>
-                            <span class="text-xs text-slate-500">${ds.address}</span>
-                        </div>
-                    `).join('');
-                }
+            // Listen for BroadcastChannel messages
+            if (typeof window.channel !== 'undefined') {
+                window.channel.onmessage = (event) => {
+                    window.state = event.data;
+                    updateUI(window.state);
+                };
+            } else {
+                // Fallback polling
+                setInterval(() => {
+                    const stored = JSON.parse(localStorage.getItem('lcos_state'));
+                    if (stored && JSON.stringify(stored) !== JSON.stringify(window.state)) {
+                        window.state = stored;
+                        updateUI(window.state);
+                    }
+                }, 1000);
             }
 
-            // Campaigns
-            if (currentTab === 'marketing') {
-                const campDiv = document.getElementById('campaignList');
-                if (campDiv && s.campaigns) {
-                    campDiv.innerHTML = s.campaigns.map(c => `
-                        <div class="flex justify-between text-sm py-1">
-                            <span>${c.name}</span>
-                            <span class="badge ${c.active?'badge-green':'badge-slate'}">${c.active?'Active':'Inactive'}</span>
-                        </div>
-                    `).join('');
+            // Initial render
+            updateUI(window.state);
+            renderRevenueChart();
+            renderActivityFeed();
+            renderOrdersTable();
+        }
+
+        // --- 2. UI UPDATE ENGINE ---
+        function updateUI(state) {
+            // Update KPIs
+            const gmv = state.adminMetrics?.gmv || 245000;
+            const liveOrders = state.stats?.liveOrders || 0;
+            
+            document.getElementById('kpi-gmv').textContent = `₹${gmv.toLocaleString()}`;
+            document.getElementById('kpi-live-orders').textContent = liveOrders;
+            
+            // Update Live Ops counts
+            const placed = state.orders.filter(o => o.status === 'placed' || o.status === 'accepted').length;
+            const prep = state.orders.filter(o => o.status === 'preparing' || o.status === 'packed').length;
+            const delivery = state.orders.filter(o => o.status === 'assigned').length;
+            
+            document.getElementById('live-count-placed').textContent = placed;
+            document.getElementById('live-count-prep').textContent = prep;
+            document.getElementById('live-count-delivery').textContent = delivery;
+            
+            // Update Nav Badge
+            const navBadge = document.getElementById('nav-live-badge');
+            if (liveOrders > 0) {
+                navBadge.textContent = liveOrders;
+                navBadge.classList.remove('hidden');
+            } else {
+                navBadge.classList.add('hidden');
+            }
+
+            // Update Live Orders Table
+            renderLiveOrdersTable(state);
+        }
+
+        function renderLiveOrdersTable(state) {
+            const tbody = document.getElementById('live-orders-table');
+            const activeOrders = state.orders.filter(o => o.status !== 'delivered' && o.status !== 'cancelled');
+            
+            if (activeOrders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted p-6">No active orders. System is idle.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = activeOrders.map(o => {
+                let statusBadge = '';
+                switch(o.status) {
+                    case 'placed': statusBadge = '<span class="badge badge-blue">Placed</span>'; break;
+                    case 'accepted': statusBadge = '<span class="badge badge-blue">Accepted</span>'; break;
+                    case 'preparing': statusBadge = '<span class="badge badge-amber">Preparing</span>'; break;
+                    case 'packed': statusBadge = '<span class="badge badge-purple">Packed</span>'; break;
+                    case 'assigned': statusBadge = '<span class="badge badge-green">Out for Delivery</span>'; break;
+                    default: statusBadge = '<span class="badge badge-gray">Unknown</span>';
+                }
+
+                return `
+                    <tr>
+                        <td class="font-mono font-semibold">${o.id}</td>
+                        <td>${o.customer}</td>
+                        <td>QuickMart</td>
+                        <td>${o.status === 'assigned' ? 'Rahul S. (RID-9876)' : '<span class="text-muted">Pending</span>'}</td>
+                        <td>${o.product}</td>
+                        <td class="font-semibold">₹${o.price}</td>
+                        <td>${statusBadge}</td>
+                        <td>${o.status === 'assigned' ? '12 mins' : '--'}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderOrdersTable() {
+            const tbody = document.getElementById('orders-table-body');
+            // Mock historical data + live state
+            const mockOrders = [
+                { id: 'ORD-9920', date: 'Today, 09:15 AM', customer: 'Priya Sharma', vendor: 'Fresh Bites', amount: 320, payment: 'UPI', status: 'delivered' },
+                { id: 'ORD-9919', date: 'Today, 08:30 AM', customer: 'Amit Patel', vendor: 'MediPlus', amount: 150, payment: 'Card', status: 'delivered' },
+                { id: 'ORD-9918', date: 'Yesterday, 06:00 PM', customer: 'Sneha Reddy', vendor: 'QuickMart', amount: 450, payment: 'COD', status: 'delivered' },
+            ];
+
+            // Add live orders from state
+            const liveOrders = window.state.orders.map(o => ({
+                id: o.id,
+                date: o.time,
+                customer: o.customer,
+                vendor: 'QuickMart',
+                amount: o.price,
+                payment: o.paymentMethod,
+                status: o.status
+            }));
+
+            const allOrders = [...liveOrders, ...mockOrders];
+
+            tbody.innerHTML = allOrders.map(o => {
+                let statusBadge = '';
+                switch(o.status) {
+                    case 'delivered': statusBadge = '<span class="badge badge-green">Delivered</span>'; break;
+                    case 'cancelled': statusBadge = '<span class="badge badge-red">Cancelled</span>'; break;
+                    case 'placed': statusBadge = '<span class="badge badge-blue">Placed</span>'; break;
+                    case 'preparing': statusBadge = '<span class="badge badge-amber">Preparing</span>'; break;
+                    case 'assigned': statusBadge = '<span class="badge badge-purple">Out for Delivery</span>'; break;
+                    default: statusBadge = '<span class="badge badge-gray">Processing</span>';
+                }
+
+                return `
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td class="font-mono font-semibold">${o.id}</td>
+                        <td class="text-muted">${o.date}</td>
+                        <td>${o.customer}</td>
+                        <td>${o.vendor}</td>
+                        <td class="font-semibold">₹${o.amount}</td>
+                        <td><span class="badge badge-gray">${o.payment}</span></td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            <button class="btn btn-ghost btn-sm">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // --- 3. CHART RENDERING ---
+        function renderRevenueChart() {
+            const container = document.getElementById('revenue-chart');
+            const data = [45, 52, 38, 65, 72, 58, 80, 92, 75, 88, 95, 110, 105, 125]; // Mock data
+            const maxVal = Math.max(...data);
+            
+            container.innerHTML = data.map((val, i) => {
+                const height = (val / maxVal) * 100;
+                return `<div class="chart-bar" style="height: ${height}%;" data-value="₹${val}k"></div>`;
+            }).join('');
+        }
+
+        // --- 4. ACTIVITY FEED ---
+        function renderActivityFeed() {
+            const feed = document.getElementById('activity-feed');
+            const activities = [
+                { icon: '🛒', color: 'var(--brand-primary-bg)', text: '<strong>New order</strong> #ORD-9921 placed by Nitish Kumar', time: 'Just now' },
+                { icon: '✅', color: 'var(--success-bg)', text: '<strong>Order</strong> #ORD-9920 delivered successfully', time: '5 mins ago' },
+                { icon: '🚨', color: 'var(--danger-bg)', text: '<strong>Fraud Alert:</strong> Blocked suspicious login from IP 192.168.x.x', time: '12 mins ago' },
+                { icon: '🤖', color: 'var(--purple-bg)', text: '<strong>AI Agent</strong> adjusted surge pricing in Zone 4', time: '15 mins ago' },
+                { icon: '💰', color: 'var(--warning-bg)', text: '<strong>Payout</strong> of ₹12,450 processed for QuickMart', time: '1 hour ago' },
+            ];
+
+            feed.innerHTML = activities.map(a => `
+                <div class="activity-item">
+                    <div class="activity-icon" style="background: ${a.color}; font-size: 1rem;">${a.icon}</div>
+                    <div class="activity-content">
+                        <div class="activity-text">${a.text}</div>
+                        <div class="activity-time">${a.time}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- 5. ROUTER ---
+        const router = {
+            navigate: (viewId) => {
+                document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                
+                const target = document.getElementById(`view-${viewId}`);
+                if (target) {
+                    target.classList.add('active');
+                    document.querySelector(`.nav-item[data-view="${viewId}"]`)?.classList.add('active');
+                    
+                    // Re-render tables if switching to those views
+                    if (viewId === 'orders') renderOrdersTable();
+                    if (viewId === 'live-ops') renderLiveOrdersTable(window.state);
                 }
             }
         };
 
-        // Initial load
-        switchAdminTab('executive');
+        // --- 6. INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initAdminState();
+            window.router = router;
+        });
     </script>
 </body>
 </html>
