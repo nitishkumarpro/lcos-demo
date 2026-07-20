@@ -4,73 +4,101 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vendor – LCOS</title>
+  <link rel="stylesheet" href="style.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="state.js"></script>
-  <style>
-    body { background: #f8fafc; font-family: 'Inter', sans-serif; }
-    .card { background: white; border-radius: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
-    .sidebar-item { transition: all 0.15s; border-left: 3px solid transparent; }
-    .sidebar-item.active, .sidebar-item:hover { background: #eff6ff; border-left-color: #3b82f6; color: #1e40af; }
-  </style>
 </head>
 <body class="h-screen flex">
-  <!-- Sidebar -->
   <aside class="w-56 bg-slate-50 border-r p-3 space-y-1 text-sm overflow-y-auto">
     <div class="font-bold text-amber-600 mb-4 px-2"><i class="fa-solid fa-store"></i> Vendor Panel</div>
-    <div onclick="switchVendorTab('dashboard')" class="sidebar-item px-3 py-2 rounded cursor-pointer active" data-vtab="dashboard">📊 Dashboard</div>
-    <div onclick="switchVendorTab('orders')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-vtab="orders">📦 Orders</div>
-    <div onclick="switchVendorTab('inventory')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-vtab="inventory">📋 Inventory</div>
-    <div onclick="switchVendorTab('products')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-vtab="products">🏷️ Products</div>
-    <div onclick="switchVendorTab('promotions')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-vtab="promotions">🎟️ Promotions</div>
-    <div onclick="switchVendorTab('analytics')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-vtab="analytics">📈 Analytics</div>
-    <div onclick="switchVendorTab('finance')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-vtab="finance">💰 Finance</div>
-    <div onclick="switchVendorTab('team')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-vtab="team">👥 Team</div>
-    <div onclick="switchVendorTab('marketing')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-vtab="marketing">📣 Marketing</div>
-    <div onclick="switchVendorTab('reviews')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-vtab="reviews">⭐ Reviews</div>
+    <div onclick="switchTab('dashboard')" class="sidebar-item px-3 py-2 rounded cursor-pointer active" data-vtab="dashboard">📊 Dashboard</div>
+    <div onclick="switchTab('orders')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-vtab="orders">📦 Orders</div>
+    <div onclick="switchTab('inventory')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-vtab="inventory">📋 Inventory</div>
+    <div onclick="switchTab('products')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-vtab="products">🏷️ Products</div>
+    <div onclick="switchTab('promotions')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-vtab="promotions">🎟️ Promotions</div>
+    <div onclick="switchTab('analytics')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-vtab="analytics">📈 Analytics</div>
+    <div onclick="switchTab('finance')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-vtab="finance">💰 Finance</div>
+    <div onclick="switchTab('team')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-vtab="team">👥 Team</div>
+    <div onclick="switchTab('marketing')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-vtab="marketing">📣 Marketing</div>
+    <div onclick="switchTab('reviews')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-vtab="reviews">⭐ Reviews</div>
   </aside>
-  <!-- Content -->
   <main class="flex-1 p-5 overflow-y-auto" id="vendorContent"></main>
 
   <script>
     const tabs = ['dashboard','orders','inventory','products','promotions','analytics','finance','team','marketing','reviews'];
 
-    function switchVendorTab(tab) {
+    function switchTab(tab) {
       document.getElementById('vendorContent').innerHTML = renderTab(tab);
       document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
       document.querySelector(`.sidebar-item[data-vtab="${tab}"]`).classList.add('active');
     }
 
     function renderTab(tab) {
-      if (tab === 'dashboard') return `
-        <div class="grid grid-cols-3 gap-4 mb-5">
-          <div class="card p-4"><p class="text-slate-500">Orders</p><p class="text-2xl font-bold" id="vOrders">0</p></div>
-          <div class="card p-4"><p class="text-slate-500">Revenue</p><p class="text-2xl font-bold" id="vRevenue">₹0</p></div>
-          <div class="card p-4"><p class="text-slate-500">Live</p><span class="inline-block w-3 h-3 bg-emerald-500 rounded-full pulse-dot"></span></div>
-        </div>
-        <h4 class="font-semibold mb-2">Recent Orders</h4>
-        <div id="vendorOrderList" class="space-y-2"></div>
-      `;
-      return `<div class="card p-6 text-center text-slate-500">${tab} module (simulated with real data where applicable)</div>`;
+      switch(tab) {
+        case 'dashboard':
+          return `
+            <div class="grid grid-cols-3 gap-4 mb-5">
+              <div class="card p-4"><p class="text-slate-500">Today Orders</p><p class="text-2xl font-bold" id="vOrders">0</p></div>
+              <div class="card p-4"><p class="text-slate-500">Revenue</p><p class="text-2xl font-bold" id="vRevenue">₹0</p></div>
+              <div class="card p-4"><p class="text-slate-500">Live Orders</p><span class="pulse-dot inline-block w-3 h-3 bg-emerald-500 rounded-full"></span></div>
+            </div>
+            <h4 class="font-semibold mb-2">Recent Orders</h4>
+            <div id="vendorOrderList" class="space-y-2"></div>
+          `;
+        case 'orders':
+          return `<h4 class="font-semibold mb-2">All Orders</h4><div id="vendorOrderList" class="space-y-2"></div>`;
+        case 'inventory':
+          return `
+            <h4 class="font-semibold mb-2">Stock Levels</h4>
+            <div class="space-y-2" id="invList"></div>
+          `;
+        case 'products':
+          return `
+            <h4 class="font-semibold mb-2">Product Catalog</h4>
+            <div class="card p-3 flex justify-between mb-2"><span>Amul Gold Milk</span><span class="badge badge-blue">₹65</span></div>
+            <div class="card p-3 flex justify-between mb-2"><span>Brown Bread</span><span class="badge badge-blue">₹45</span></div>
+          `;
+        case 'promotions':
+          return `<div class="card p-4">🎟️ 10% off on milk – active</div>`;
+        case 'analytics':
+          return `<div class="card p-4">📊 Sales chart (simulated)</div>`;
+        case 'finance':
+          return `<div class="card p-4">💰 Settlements, GST, Invoices (simulated)</div>`;
+        case 'team':
+          return `<div class="card p-4">👥 Employees & roles (simulated)</div>`;
+        case 'marketing':
+          return `<div class="card p-4">📣 Push campaigns (simulated)</div>`;
+        case 'reviews':
+          return `<div class="card p-4">⭐ Customer reviews (simulated)</div>`;
+        default: return '';
+      }
     }
 
-    // Update UI when state changes
-    window.onStateUpdate = function(s) {
-      const ordersEl = document.getElementById('vendorOrderList');
-      if (ordersEl) {
-        ordersEl.innerHTML = s.vendorOrders.slice(-5).reverse().map(o => `
+    window.updateUI = function(s) {
+      // Orders list
+      const ordersContainer = document.getElementById('vendorOrderList');
+      if (ordersContainer) {
+        ordersContainer.innerHTML = s.orders.slice(-5).reverse().map(o => `
           <div class="card p-3 flex justify-between">
-            <span>${o.product} #${o.id}</span>
-            <span class="text-xs px-2 py-0.5 rounded-full ${o.status==='placed'?'bg-amber-100 text-amber-700':'bg-blue-100 text-blue-700'}">${o.status}</span>
+            <span>${o.product} <span class="text-xs text-slate-500">#${o.id}</span></span>
+            <span class="badge ${o.status==='placed'?'badge-amber':'badge-blue'}">${o.status}</span>
           </div>`).join('');
       }
-      document.getElementById('vOrders') && (document.getElementById('vOrders').innerText = s.vendorOrders.length);
-      document.getElementById('vRevenue') && (document.getElementById('vRevenue').innerText = '₹' + s.vendorOrders.reduce((sum,o)=>sum+o.price,0));
+      // Stats
+      document.getElementById('vOrders') && (document.getElementById('vOrders').innerText = s.orders.length);
+      document.getElementById('vRevenue') && (document.getElementById('vRevenue').innerText = '₹' + s.orders.reduce((sum,o)=>sum+o.price,0));
+      // Inventory
+      const invDiv = document.getElementById('invList');
+      if (invDiv) {
+        invDiv.innerHTML = Object.entries(s.inventory).map(([item, qty]) => `
+          <div class="card p-3 flex justify-between"><span>${item}</span><span class="badge ${qty<20?'badge-rose':'badge-green'}">${qty} units</span></div>
+        `).join('');
+      }
     };
 
-    // initial load
-    switchVendorTab('dashboard');
-    onStateUpdate(state);
+    switchTab('dashboard');
+    updateUI(state);
   </script>
 </body>
 </html>

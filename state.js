@@ -1,31 +1,29 @@
-// state.js - shared across all tabs via BroadcastChannel
-const CHANNEL_NAME = 'lcos-ecosystem';
+// state.js – cross‑tab reactive store
+const CH = new BroadcastChannel('lcos');
 
 const defaultState = {
   orders: [],
-  vendorOrders: [],
   currentOrderId: null,
   riderAssigned: null,
-  stats: { totalOrders: 0, revenue: 0, liveOrders: 0 }
+  stats: { totalOrders: 0, revenue: 0, liveOrders: 0 },
+  inventory: { 'milk': 45, 'bread': 30, 'eggs': 60 },
+  wallet: { balance: 240, transactions: [] },
+  notifications: [],
 };
 
 let state = JSON.parse(localStorage.getItem('lcos_state')) || defaultState;
 
-const channel = new BroadcastChannel(CHANNEL_NAME);
-
-function broadcast() {
+function save() {
   localStorage.setItem('lcos_state', JSON.stringify(state));
-  channel.postMessage(state);
+  CH.postMessage(state);
 }
 
-channel.onmessage = (e) => {
+CH.onmessage = (e) => {
   state = e.data;
-  // global update callback can be set by each page
-  if (window.onStateUpdate) window.onStateUpdate(state);
+  if (window.updateUI) window.updateUI(state);
 };
 
-// helper functions
-function placeOrder(product = 'Amul Gold Milk', price = 65) {
+function placeOrder(product, price) {
   const order = {
     id: 'ORD' + Date.now().toString().slice(-5),
     product,
@@ -35,47 +33,37 @@ function placeOrder(product = 'Amul Gold Milk', price = 65) {
   };
   state.currentOrderId = order.id;
   state.orders.push(order);
-  state.vendorOrders.push({...order});
   state.stats.totalOrders++;
   state.stats.revenue += price;
   state.stats.liveOrders++;
-  broadcast();
+  // reduce inventory
+  if (product.includes('Milk')) state.inventory.milk--;
+  else if (product.includes('Bread')) state.inventory.bread--;
+  save();
   return order;
 }
 
-function advanceOrder(newStatus) {
+function advanceOrder(status) {
   const order = state.orders.find(o => o.id === state.currentOrderId);
   if (!order) return;
-  order.status = newStatus;
-  const vOrder = state.vendorOrders.find(o => o.id === state.currentOrderId);
-  if (vOrder) vOrder.status = newStatus;
-  broadcast();
+  order.status = status;
+  save();
 }
 
-function simulateFullLifecycle() {
+function simulateLifecycle() {
   if (!state.currentOrderId) return;
-  const chain = ['accepted', 'preparing', 'packed'];
-  let delay = 1500;
-  chain.forEach((status, i) => {
-    setTimeout(() => advanceOrder(status), delay * (i+1));
-  });
+  setTimeout(() => advanceOrder('accepted'), 2000);
+  setTimeout(() => advanceOrder('preparing'), 3500);
+  setTimeout(() => advanceOrder('packed'), 5000);
   setTimeout(() => {
     state.riderAssigned = state.currentOrderId;
-    broadcast();
+    save();
+    setTimeout(() => advanceOrder('assigned'), 1500);
     setTimeout(() => {
-      advanceOrder('assigned');
-      setTimeout(() => {
-        advanceOrder('delivered');
-        state.riderAssigned = null;
-        state.stats.liveOrders = Math.max(0, state.stats.liveOrders - 1);
-        broadcast();
-      }, 3000);
-    }, 2000);
-  }, delay * 4);
+      advanceOrder('delivered');
+      state.riderAssigned = null;
+      state.stats.liveOrders = Math.max(0, state.stats.liveOrders - 1);
+      save();
+    }, 6000);
+  }, 6500);
 }
-
-// expose to global
-window.state = state;
-window.placeOrder = placeOrder;
-window.advanceOrder = advanceOrder;
-window.simulateFullLifecycle = simulateFullLifecycle;

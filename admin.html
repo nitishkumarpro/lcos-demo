@@ -4,13 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin – LCOS</title>
+  <link rel="stylesheet" href="style.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="state.js"></script>
-  <style>
-    .sidebar-item { border-left: 3px solid transparent; }
-    .sidebar-item.active, .sidebar-item:hover { background: #eff6ff; border-left-color: #3b82f6; }
-  </style>
 </head>
 <body class="h-screen flex">
   <aside class="w-60 bg-slate-50 border-r p-3 space-y-1 text-sm overflow-y-auto">
@@ -21,10 +18,16 @@
     <div onclick="switchAdminTab('riders')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-atab="riders">🛵 Riders</div>
     <div onclick="switchAdminTab('catalog')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-atab="catalog">📚 Catalog</div>
     <div onclick="switchAdminTab('orders')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-atab="orders">📦 Orders</div>
-    <!-- ... more tabs ... -->
+    <div onclick="switchAdminTab('logistics')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-atab="logistics">🚚 Logistics</div>
+    <div onclick="switchAdminTab('marketing')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-atab="marketing">📣 Marketing</div>
+    <div onclick="switchAdminTab('finance')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-atab="finance">💰 Finance</div>
+    <div onclick="switchAdminTab('crm')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-atab="crm">🎧 CRM</div>
+    <div onclick="switchAdminTab('analytics')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-atab="analytics">📊 Analytics</div>
+    <div onclick="switchAdminTab('ai')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-atab="ai">🤖 AI Center</div>
+    <div onclick="switchAdminTab('cms')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-atab="cms">📝 CMS</div>
+    <div onclick="switchAdminTab('system')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-atab="system">⚙️ System</div>
   </aside>
   <main class="flex-1 p-5 overflow-y-auto" id="adminContent"></main>
-
   <script>
     function switchAdminTab(tab) {
       document.getElementById('adminContent').innerHTML = renderAdminTab(tab);
@@ -41,17 +44,19 @@
         <h4 class="font-semibold mb-2">Activity Feed</h4>
         <div id="adminFeed" class="space-y-1 text-sm"></div>
       `;
-      return `<div class="card p-6 text-center text-slate-500">${tab} module (simulated)</div>`;
+      return `<div class="card p-6"><h3 class="font-bold text-lg mb-3">${tab} Module</h3><p class="text-slate-500">Simulated with real‑time data where applicable.</p></div>`;
     }
-    window.onStateUpdate = function(s) {
+
+    window.updateUI = function(s) {
       document.getElementById('aOrders') && (document.getElementById('aOrders').innerText = s.stats.totalOrders);
       document.getElementById('aRevenue') && (document.getElementById('aRevenue').innerText = '₹' + s.stats.revenue);
       document.getElementById('aLive') && (document.getElementById('aLive').innerText = s.stats.liveOrders);
       const feed = document.getElementById('adminFeed');
-      if (feed) feed.innerHTML = s.orders.slice(-5).reverse().map(o => `<div class="flex justify-between"><span>${o.product} #${o.id}</span><span class="text-xs ${o.status==='delivered'?'text-green-600':'text-blue-600'}">${o.status}</span></div>`).join('');
+      if (feed) feed.innerHTML = s.orders.slice(-4).reverse().map(o => `<div class="flex justify-between"><span>${o.product} #${o.id}</span><span class="badge ${o.status==='delivered'?'badge-green':'badge-blue'}">${o.status}</span></div>`).join('');
     };
+
     switchAdminTab('exec');
-    onStateUpdate(state);
+    updateUI(state);
   </script>
 </body>
 </html>
