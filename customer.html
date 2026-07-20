@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Customer – LCOS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="state.js"></script>
+  <style>
+    body { background: #f8fafc; font-family: 'Inter', sans-serif; }
+    .card { background: white; border-radius: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+    .tab-btn { border-bottom: 2px solid transparent; padding-bottom: 0.5rem; transition: 0.2s; }
+    .tab-btn.active { border-bottom-color: #2563eb; color: #2563eb; font-weight: 600; }
+    .bubble { background: #eff6ff; border-radius: 50px; padding: 0.25rem 0.75rem; font-size: 0.75rem; }
+  </style>
+</head>
+<body class="h-screen flex flex-col">
+  <!-- Header -->
+  <header class="bg-white border-b px-4 py-3 flex items-center justify-between shadow-sm">
+    <div class="flex items-center gap-2">
+      <i class="fa-solid fa-location-dot text-blue-500"></i>
+      <span class="font-medium">Home, 12th Cross</span>
+      <i class="fa-solid fa-chevron-down text-xs"></i>
+    </div>
+    <div class="flex items-center gap-4">
+      <span class="bg-blue-50 px-3 py-1 rounded-full text-sm text-blue-700"><i class="fa-solid fa-wallet"></i> ₹240</span>
+      <span class="relative"><i class="fa-solid fa-bell text-slate-600"></i><span class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span></span>
+    </div>
+  </header>
+
+  <!-- Screens container -->
+  <main class="flex-1 overflow-y-auto p-4 pb-20" id="screenContainer">
+    <!-- Home Screen -->
+    <div id="homeScreen">
+      <!-- Search -->
+      <div class="bg-white rounded-full px-4 py-3 flex items-center gap-2 mb-4 border">
+        <i class="fa-solid fa-magnifying-glass text-slate-400"></i>
+        <input type="text" placeholder="Search for products..." class="bg-transparent outline-none flex-1 text-sm">
+        <i class="fa-solid fa-microphone text-slate-400"></i>
+      </div>
+      <!-- Categories -->
+      <div class="flex gap-2 overflow-x-auto pb-3 mb-4">
+        <span class="bubble bg-blue-100 text-blue-700 whitespace-nowrap">🥛 Milk</span>
+        <span class="bubble bg-blue-100 text-blue-700 whitespace-nowrap">🍞 Bread</span>
+        <span class="bubble bg-blue-100 text-blue-700 whitespace-nowrap">🍎 Fruits</span>
+        <span class="bubble bg-blue-100 text-blue-700 whitespace-nowrap">🥚 Eggs</span>
+        <span class="bubble bg-blue-100 text-blue-700 whitespace-nowrap">🍪 Snacks</span>
+      </div>
+      <!-- Banner -->
+      <div class="bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl p-5 text-white mb-5">
+        <h3 class="font-bold text-lg">⚡ Flash Sale</h3>
+        <p>Up to 50% off on daily essentials</p>
+      </div>
+      <!-- Product Grid -->
+      <h4 class="font-semibold mb-2">Daily Essentials</h4>
+      <div class="grid grid-cols-2 gap-3">
+        <div class="card p-3 flex flex-col items-center" onclick="buyProduct('Amul Gold Milk', 65)">
+          <div class="text-3xl">🥛</div>
+          <p class="font-medium text-sm mt-1">Amul Gold Milk</p>
+          <p class="text-xs text-slate-500">500 ml · ₹65</p>
+          <button class="bg-blue-600 text-white rounded-lg text-xs mt-2 py-1 px-3">Buy Now</button>
+        </div>
+        <div class="card p-3 flex flex-col items-center" onclick="buyProduct('Brown Bread', 45)">
+          <div class="text-3xl">🍞</div>
+          <p class="font-medium text-sm mt-1">Brown Bread</p>
+          <p class="text-xs text-slate-500">400g · ₹45</p>
+          <button class="bg-blue-600 text-white rounded-lg text-xs mt-2 py-1 px-3">Buy Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tracking Screen -->
+    <div id="trackingScreen" class="hidden">
+      <h3 class="font-bold text-lg mb-4"><i class="fa-solid fa-truck-fast text-blue-600"></i> Live Order Tracking</h3>
+      <div id="trackingSteps" class="space-y-4"></div>
+      <div class="mt-6 card p-4 text-center text-sm">
+        <i class="fa-solid fa-map-location-dot text-3xl text-blue-400 mb-2 block"></i>
+        Rider on map (simulated)
+      </div>
+    </div>
+
+    <!-- Orders Screen -->
+    <div id="ordersScreen" class="hidden space-y-3">
+      <h3 class="font-bold text-lg">My Orders</h3>
+      <div id="orderHistory"></div>
+    </div>
+
+    <!-- Wallet Screen -->
+    <div id="walletScreen" class="hidden space-y-3">
+      <h3 class="font-bold text-lg">Wallet</h3>
+      <div class="card p-4">
+        <p>Balance: <span class="font-bold">₹240</span></p>
+        <p class="text-sm text-slate-500">Cashback + Credits</p>
+      </div>
+      <div class="card p-4 text-sm">Transaction history (simulated)</div>
+    </div>
+
+    <!-- Profile Screen -->
+    <div id="profileScreen" class="hidden space-y-3">
+      <h3 class="font-bold text-lg">Profile</h3>
+      <div class="card p-4 space-y-2 text-sm">
+        <p><i class="fa-solid fa-user"></i> Nitish Kumar</p>
+        <p><i class="fa-solid fa-envelope"></i> nitish@example.com</p>
+        <p><i class="fa-solid fa-phone"></i> +91 75699 79953</p>
+        <p><i class="fa-solid fa-location-dot"></i> 2 saved addresses</p>
+        <p><i class="fa-solid fa-credit-card"></i> Saved cards: 1</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="bg-white border-t px-2 py-2 flex justify-around text-xs font-medium">
+    <button onclick="switchTab('home')" class="tab-btn active flex flex-col items-center" data-tab="home">
+      <i class="fa-solid fa-house text-lg"></i><span>Home</span>
+    </button>
+    <button onclick="switchTab('tracking')" class="tab-btn flex flex-col items-center" data-tab="tracking">
+      <i class="fa-solid fa-map-location-dot text-lg"></i><span>Track</span>
+    </button>
+    <button onclick="switchTab('orders')" class="tab-btn flex flex-col items-center" data-tab="orders">
+      <i class="fa-solid fa-receipt text-lg"></i><span>Orders</span>
+    </button>
+    <button onclick="switchTab('wallet')" class="tab-btn flex flex-col items-center" data-tab="wallet">
+      <i class="fa-solid fa-wallet text-lg"></i><span>Wallet</span>
+    </button>
+    <button onclick="switchTab('profile')" class="tab-btn flex flex-col items-center" data-tab="profile">
+      <i class="fa-solid fa-user text-lg"></i><span>Profile</span>
+    </button>
+  </nav>
+
+  <script>
+    // Tab switching
+    function switchTab(tab) {
+      document.querySelectorAll('[id$="Screen"]').forEach(el => el.classList.add('hidden'));
+      document.getElementById(tab + 'Screen').classList.remove('hidden');
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active');
+    }
+
+    // Buy product and start lifecycle
+    function buyProduct(name, price) {
+      const order = placeOrder(name, price);
+      simulateFullLifecycle();
+      switchTab('tracking');
+    }
+
+    // Update UI when state changes (from BroadcastChannel)
+    window.onStateUpdate = function(s) {
+      renderTracking(s);
+      renderOrders(s);
+    };
+
+    function renderTracking(s) {
+      const stepsDiv = document.getElementById('trackingSteps');
+      if (!stepsDiv) return;
+      const order = s.orders.find(o => o.id === s.currentOrderId);
+      if (!order) {
+        stepsDiv.innerHTML = '<p class="text-slate-400">No active order</p>';
+        return;
+      }
+      const steps = ['placed','accepted','preparing','packed','assigned','delivered'];
+      const labels = ['Order Placed','Vendor Accepted','Preparing','Packed','Rider Assigned','Delivered'];
+      stepsDiv.innerHTML = steps.map((step, i) => {
+        const active = steps.indexOf(order.status) >= i;
+        return `<div class="flex items-center gap-3 ${active ? 'text-blue-700 font-medium' : 'text-slate-400'}">
+          <i class="fa-solid fa-circle text-xs ${active ? 'text-blue-500' : 'text-slate-300'}"></i>
+          ${labels[i]}
+        </div>`;
+      }).join('');
+    }
+
+    function renderOrders(s) {
+      const div = document.getElementById('orderHistory');
+      if (!div) return;
+      div.innerHTML = s.orders.length === 0
+        ? '<p class="text-slate-400">No orders yet.</p>'
+        : s.orders.slice().reverse().map(o => `
+          <div class="card p-3 flex justify-between">
+            <span>${o.product} <span class="text-xs text-slate-500">#${o.id}</span></span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">${o.status}</span>
+          </div>`).join('');
+    }
+
+    // initial render
+    renderTracking(state);
+    renderOrders(state);
+  </script>
+</body>
+</html>
