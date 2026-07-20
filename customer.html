@@ -809,7 +809,8 @@
                 <h3 class="font-bold mb-2">Description</h3>
                 <p id="product-detail-desc" class="text-sm text-secondary mb-6">Fresh, high-quality product sourced directly from local farms. No preservatives added.</p>
 
-                <div class="fixed bottom-0 left-0 right-0 p-4 bg-surface border-t z-40" style="padding-bottom: calc(1rem + var(--safe-area-bottom));">
+                <!-- ======== FIXED BUTTON WITH EXTRA BOTTOM PADDING ======== -->
+                <div class="fixed bottom-0 left-0 right-0 p-4 bg-surface border-t z-40" style="padding-bottom: calc(1rem + var(--safe-area-bottom) + 90px);">
                     <button id="product-add-btn" class="btn btn-primary w-full btn-lg">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
                         Add to Cart
@@ -889,9 +890,12 @@
                     </div>
                 </div>
 
-                <button class="btn btn-primary w-full btn-lg mt-4" onclick="placeDemoOrder()">
-                    Place Order
-                </button>
+                <!-- ======== FIXED ORDER BUTTON WITH EXTRA PADDING ======== -->
+                <div class="fixed bottom-0 left-0 right-0 p-4 bg-surface border-t z-40" style="padding-bottom: calc(1rem + var(--safe-area-bottom) + 90px);">
+                    <button class="btn btn-primary w-full btn-lg" onclick="placeDemoOrder()">
+                        Place Order
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -1204,6 +1208,15 @@
                     if (viewId === 'product' && params) renderProductDetail(params);
                     if (viewId === 'tracking' && params) renderTracking(params);
 
+                    // Hide cart bar on views where it would overlap buttons
+                    const hideBarViews = ['checkout', 'tracking', 'product', 'ai-assistant'];
+                    if (hideBarViews.includes(viewId)) {
+                        document.getElementById('cart-bar').classList.remove('visible');
+                    } else {
+                        // Re-evaluate cart visibility after navigation
+                        updateCartUI();
+                    }
+
                     window.scrollTo(0, 0);
                     saveState();
                 }
@@ -1419,8 +1432,13 @@
             `).join('');
         }
 
+        let trackingInterval = null;
+
         function renderTracking(orderId) {
             document.getElementById('tracking-order-id').textContent = orderId;
+            
+            // Clear any previous interval
+            if (trackingInterval) clearInterval(trackingInterval);
             
             // Simulate progress
             let progress = 0;
@@ -1428,7 +1446,7 @@
             const marker = document.getElementById('rider-marker');
             const eta = document.getElementById('tracking-eta');
             
-            const interval = setInterval(() => {
+            trackingInterval = setInterval(() => {
                 progress += 2;
                 if (progress > 90) progress = 90;
                 
@@ -1438,10 +1456,13 @@
                 const mins = Math.max(1, Math.round(10 - (progress / 10)));
                 eta.textContent = `${mins} min${mins > 1 ? 's' : ''}`;
                 
-                if (progress >= 90) clearInterval(interval);
+                if (progress >= 90) {
+                    clearInterval(trackingInterval);
+                    trackingInterval = null;
+                }
             }, 500);
 
-            // Timeline
+            // Timeline (can be updated dynamically from state)
             const timeline = document.getElementById('tracking-timeline');
             const steps = [
                 { status: 'Order Placed', time: '10:30 AM', done: true },
@@ -1507,27 +1528,28 @@
             document.getElementById('cart-count').textContent = totalItems;
             document.getElementById('cart-bar-total').textContent = `₹${totalPrice}`;
             
-            if (totalItems > 0) {
-                document.getElementById('cart-bar').classList.add('visible');
-            } else {
-                document.getElementById('cart-bar').classList.remove('visible');
-            }
+            // Only show cart bar if cart not empty and not on views that hide it
+            const hideBarViews = ['checkout', 'tracking', 'product', 'ai-assistant'];
+            const shouldShow = totalItems > 0 && !hideBarViews.includes(appState.currentView);
+            document.getElementById('cart-bar').classList.toggle('visible', shouldShow);
         }
 
         function showCartBar() {
-            // Trigger animation
+            // Force show for a moment, then let updateCartUI decide
             const bar = document.getElementById('cart-bar');
             bar.classList.add('visible');
             setTimeout(() => {
-                if (appState.cart.reduce((sum, item) => sum + item.qty, 0) === 0) {
-                    bar.classList.remove('visible');
-                }
+                // Re-evaluate after a brief moment
+                updateCartUI();
             }, 3000);
         }
 
         // --- 6. CHECKOUT & ORDER SIMULATION ---
         function placeDemoOrder() {
-            if (appState.cart.length === 0) return;
+            if (appState.cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
             
             const total = appState.cart.reduce((sum, item) => {
                 const p = DB.products.find(prod => prod.id === item.productId);
@@ -1536,17 +1558,27 @@
             
             const productName = appState.cart.length === 1 ? DB.products.find(p => p.id === appState.cart[0].productId).name : `${appState.cart.length} items`;
             
-            // Call global state simulation (from state.js logic)
-            if (typeof window.placeOrder === 'function') {
-                window.placeOrder(productName, total);
-                window.simulateFullLifecycle();
+            // Check if state.js is loaded and functions are available
+            if (typeof window.placeOrder !== 'function') {
+                alert('System not ready. Please refresh the page and try again.');
+                return;
             }
             
-            // Clear cart
+            // Place the order
+            window.placeOrder(productName, total);
+            
+            // Trigger the lifecycle simulation if available
+            if (typeof window.simulateFullLifecycle === 'function') {
+                window.simulateFullLifecycle();
+            } else {
+                console.warn('simulateFullLifecycle not available – order will not auto-progress.');
+            }
+            
+            // Clear cart immediately
             appState.cart = [];
             saveState();
             
-            // Navigate to tracking
+            // Navigate to tracking after a short delay to let state update
             setTimeout(() => {
                 const globalState = JSON.parse(localStorage.getItem('lcos_state') || '{}');
                 if (globalState.currentOrderId) {
@@ -1604,21 +1636,48 @@
             }, 1000);
         }
 
-        // --- 9. INITIALIZATION ---
-        document.addEventListener('DOMContentLoaded', () => {
-            renderHome();
-            updateCartUI();
-            
-            // Listen for global state changes (from other tabs)
+        // --- 9. LISTEN FOR CROSS-TAB UPDATES ---
+        function listenForStateChanges() {
             if (typeof window.channel !== 'undefined') {
-                window.channel.onmessage = () => {
+                window.channel.onmessage = (event) => {
+                    // Refresh views that depend on global state
                     if (appState.currentView === 'orders') renderOrders();
                     if (appState.currentView === 'tracking') {
                         const gs = JSON.parse(localStorage.getItem('lcos_state') || '{}');
-                        if (gs.currentOrderId) renderTracking(gs.currentOrderId);
+                        if (gs.currentOrderId) {
+                            // Update timeline based on order status
+                            const order = gs.orders?.find(o => o.id === gs.currentOrderId);
+                            if (order) {
+                                // Could update timeline steps based on status
+                                // For now, we just re-render the tracking view
+                                renderTracking(gs.currentOrderId);
+                            }
+                        }
                     }
                 };
+            } else {
+                // Fallback: poll localStorage for changes
+                let lastState = localStorage.getItem('lcos_state');
+                setInterval(() => {
+                    const current = localStorage.getItem('lcos_state');
+                    if (current !== lastState) {
+                        lastState = current;
+                        // Refresh views
+                        if (appState.currentView === 'orders') renderOrders();
+                        if (appState.currentView === 'tracking') {
+                            const gs = JSON.parse(localStorage.getItem('lcos_state') || '{}');
+                            if (gs.currentOrderId) renderTracking(gs.currentOrderId);
+                        }
+                    }
+                }, 1000);
             }
+        }
+
+        // --- 10. INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderHome();
+            updateCartUI();
+            listenForStateChanges();
         });
 
     </script>
