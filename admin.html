@@ -1,62 +1,350 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin – LCOS</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="state.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏛️ Admin Dashboard – LCOS</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="state.js"></script>
+    <style>
+        .admin-body { display: flex; height: 100vh; }
+        .sidebar { width: 260px; background: white; border-right: 1px solid #e2e8f0; overflow-y: auto; }
+        .main-content { flex: 1; overflow-y: auto; padding: 1.5rem; }
+        .kpi-card { background: white; border-radius: 1rem; padding: 1.25rem; border: 1px solid #e2e8f0; }
+        .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
+        .status-live { background: #10b981; }
+        .status-idle { background: #f59e0b; }
+        .status-offline { background: #ef4444; }
+    </style>
 </head>
-<body class="h-screen flex">
-  <aside class="w-60 bg-slate-50 border-r p-3 space-y-1 text-sm overflow-y-auto">
-    <div class="font-bold text-rose-600 mb-4 px-2"><i class="fa-solid fa-building-columns"></i> Admin</div>
-    <div onclick="switchAdminTab('exec')" class="sidebar-item px-3 py-2 rounded cursor-pointer active" data-atab="exec">📈 Executive</div>
-    <div onclick="switchAdminTab('customers')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-atab="customers">👥 Customers</div>
-    <div onclick="switchAdminTab('vendors')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-atab="vendors">🏪 Vendors</div>
-    <div onclick="switchAdminTab('riders')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-atab="riders">🛵 Riders</div>
-    <div onclick="switchAdminTab('catalog')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-atab="catalog">📚 Catalog</div>
-    <div onclick="switchAdminTab('orders')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-atab="orders">📦 Orders</div>
-    <div onclick="switchAdminTab('logistics')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-atab="logistics">🚚 Logistics</div>
-    <div onclick="switchAdminTab('marketing')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-atab="marketing">📣 Marketing</div>
-    <div onclick="switchAdminTab('finance')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-atab="finance">💰 Finance</div>
-    <div onclick="switchAdminTab('crm')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-atab="crm">🎧 CRM</div>
-    <div onclick="switchAdminTab('analytics')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-atab="analytics">📊 Analytics</div>
-    <div onclick="switchAdminTab('ai')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-atab="ai">🤖 AI Center</div>
-    <div onclick="switchAdminTab('cms')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-atab="cms">📝 CMS</div>
-    <div onclick="switchAdminTab('system')" class="sidebar-item px-3 py-2 rounded cursor-pointer" data-atab="system">⚙️ System</div>
-  </aside>
-  <main class="flex-1 p-5 overflow-y-auto" id="adminContent"></main>
-  <script>
-    function switchAdminTab(tab) {
-      document.getElementById('adminContent').innerHTML = renderAdminTab(tab);
-      document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
-      document.querySelector(`.sidebar-item[data-atab="${tab}"]`).classList.add('active');
-    }
-    function renderAdminTab(tab) {
-      if (tab === 'exec') return `
-        <div class="grid grid-cols-4 gap-4 mb-5">
-          <div class="card p-4"><p class="text-slate-500">Total Orders</p><p class="text-2xl font-bold" id="aOrders">0</p></div>
-          <div class="card p-4"><p class="text-slate-500">Revenue</p><p class="text-2xl font-bold" id="aRevenue">₹0</p></div>
-          <div class="card p-4"><p class="text-slate-500">Live Orders</p><p class="text-2xl font-bold" id="aLive">0</p></div>
+<body class="admin-body">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="p-4 border-b">
+            <h2 class="font-bold text-rose-600 text-lg"><i class="fa-solid fa-building-columns"></i> Admin</h2>
+            <p class="text-xs text-slate-500">Super Admin</p>
         </div>
-        <h4 class="font-semibold mb-2">Activity Feed</h4>
-        <div id="adminFeed" class="space-y-1 text-sm"></div>
-      `;
-      return `<div class="card p-6"><h3 class="font-bold text-lg mb-3">${tab} Module</h3><p class="text-slate-500">Simulated with real‑time data where applicable.</p></div>`;
-    }
+        <nav class="p-2 space-y-1">
+            <div onclick="switchAdminTab('executive')" class="sidebar-item active" data-atab="executive">
+                <i class="fa-solid fa-gauge-high sidebar-icon"></i> Executive
+            </div>
+            <div onclick="switchAdminTab('customers')" class="sidebar-item" data-atab="customers">
+                <i class="fa-solid fa-users sidebar-icon"></i> Customers
+            </div>
+            <div onclick="switchAdminTab('vendors')" class="sidebar-item" data-atab="vendors">
+                <i class="fa-solid fa-store sidebar-icon"></i> Vendors
+            </div>
+            <div onclick="switchAdminTab('riders')" class="sidebar-item" data-atab="riders">
+                <i class="fa-solid fa-motorcycle sidebar-icon"></i> Riders
+            </div>
+            <div onclick="switchAdminTab('catalog')" class="sidebar-item" data-atab="catalog">
+                <i class="fa-solid fa-box sidebar-icon"></i> Catalog
+            </div>
+            <div onclick="switchAdminTab('orders')" class="sidebar-item" data-atab="orders">
+                <i class="fa-solid fa-cart-shopping sidebar-icon"></i> Orders
+            </div>
+            <div onclick="switchAdminTab('logistics')" class="sidebar-item" data-atab="logistics">
+                <i class="fa-solid fa-truck sidebar-icon"></i> Logistics
+            </div>
+            <div onclick="switchAdminTab('marketing')" class="sidebar-item" data-atab="marketing">
+                <i class="fa-solid fa-bullhorn sidebar-icon"></i> Marketing
+            </div>
+            <div onclick="switchAdminTab('finance')" class="sidebar-item" data-atab="finance">
+                <i class="fa-solid fa-coins sidebar-icon"></i> Finance
+            </div>
+            <div onclick="switchAdminTab('crm')" class="sidebar-item" data-atab="crm">
+                <i class="fa-solid fa-headset sidebar-icon"></i> CRM
+            </div>
+            <div onclick="switchAdminTab('analytics')" class="sidebar-item" data-atab="analytics">
+                <i class="fa-solid fa-chart-pie sidebar-icon"></i> Analytics
+            </div>
+            <div onclick="switchAdminTab('ai')" class="sidebar-item" data-atab="ai">
+                <i class="fa-solid fa-robot sidebar-icon"></i> AI Center
+            </div>
+            <div onclick="switchAdminTab('cms')" class="sidebar-item" data-atab="cms">
+                <i class="fa-solid fa-file-lines sidebar-icon"></i> CMS
+            </div>
+            <div onclick="switchAdminTab('system')" class="sidebar-item" data-atab="system">
+                <i class="fa-solid fa-gear sidebar-icon"></i> System
+            </div>
+        </nav>
+    </aside>
 
-    window.updateUI = function(s) {
-      document.getElementById('aOrders') && (document.getElementById('aOrders').innerText = s.stats.totalOrders);
-      document.getElementById('aRevenue') && (document.getElementById('aRevenue').innerText = '₹' + s.stats.revenue);
-      document.getElementById('aLive') && (document.getElementById('aLive').innerText = s.stats.liveOrders);
-      const feed = document.getElementById('adminFeed');
-      if (feed) feed.innerHTML = s.orders.slice(-4).reverse().map(o => `<div class="flex justify-between"><span>${o.product} #${o.id}</span><span class="badge ${o.status==='delivered'?'badge-green':'badge-blue'}">${o.status}</span></div>`).join('');
-    };
+    <!-- MAIN CONTENT -->
+    <main class="main-content" id="adminContent">
+        <!-- Rendered by JS -->
+    </main>
 
-    switchAdminTab('exec');
-    updateUI(state);
-  </script>
+    <script>
+        let currentTab = 'executive';
+
+        function switchAdminTab(tab) {
+            currentTab = tab;
+            renderAdminTab(tab);
+            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+            const activeEl = document.querySelector(`.sidebar-item[data-atab="${tab}"]`);
+            if (activeEl) activeEl.classList.add('active');
+        }
+
+        function renderAdminTab(tab) {
+            const container = document.getElementById('adminContent');
+            switch (tab) {
+                case 'executive': container.innerHTML = renderExecutive(); break;
+                case 'customers': container.innerHTML = renderCustomers(); break;
+                case 'vendors': container.innerHTML = renderVendors(); break;
+                case 'riders': container.innerHTML = renderRiders(); break;
+                case 'catalog': container.innerHTML = renderCatalog(); break;
+                case 'orders': container.innerHTML = renderOrders(); break;
+                case 'logistics': container.innerHTML = renderLogistics(); break;
+                case 'marketing': container.innerHTML = renderMarketing(); break;
+                case 'finance': container.innerHTML = renderFinance(); break;
+                case 'crm': container.innerHTML = renderCRM(); break;
+                case 'analytics': container.innerHTML = renderAnalytics(); break;
+                case 'ai': container.innerHTML = renderAI(); break;
+                case 'cms': container.innerHTML = renderCMS(); break;
+                case 'system': container.innerHTML = renderSystem(); break;
+            }
+            updateUI(window.state);
+        }
+
+        function renderExecutive() {
+            return `
+                <h3 class="text-xl font-bold mb-4">Executive Dashboard</h3>
+                <div class="grid grid-cols-4 gap-4 mb-6">
+                    <div class="kpi-card">
+                        <p class="text-slate-500 text-sm">Total Orders</p>
+                        <p class="text-2xl font-bold" id="aOrders">0</p>
+                    </div>
+                    <div class="kpi-card">
+                        <p class="text-slate-500 text-sm">Revenue</p>
+                        <p class="text-2xl font-bold" id="aRevenue">₹0</p>
+                    </div>
+                    <div class="kpi-card">
+                        <p class="text-slate-500 text-sm">Live Orders</p>
+                        <div class="flex items-center gap-2">
+                            <span class="status-dot status-live"></span>
+                            <span class="text-2xl font-bold" id="aLive">0</span>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <p class="text-slate-500 text-sm">Active Riders</p>
+                        <p class="text-2xl font-bold" id="aRiders">1</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="kpi-card">
+                        <p class="text-slate-500 text-sm">Avg Delivery Time</p>
+                        <p class="text-xl font-bold" id="aAvgTime">24 min</p>
+                    </div>
+                    <div class="kpi-card">
+                        <p class="text-slate-500 text-sm">Cancellation Rate</p>
+                        <p class="text-xl font-bold" id="aCancelRate">3.2%</p>
+                    </div>
+                </div>
+                <h4 class="font-semibold mb-2">Live Activity Feed</h4>
+                <div id="adminFeed" class="space-y-2"></div>
+            `;
+        }
+
+        function renderCustomers() {
+            return `
+                <h3 class="text-xl font-bold mb-4">Customer Management</h3>
+                <div class="card p-4 mb-3">
+                    <p class="font-medium">Total Customers</p>
+                    <p class="text-2xl font-bold">1,240</p>
+                </div>
+                <div class="card p-4">
+                    <p class="font-medium">Segments</p>
+                    <div class="flex gap-2 mt-2">
+                        <span class="badge badge-blue">New (340)</span>
+                        <span class="badge badge-amber">Regular (670)</span>
+                        <span class="badge badge-purple">VIP (230)</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderVendors() {
+            return `
+                <h3 class="text-xl font-bold mb-4">Vendor Management</h3>
+                <div class="card p-4 mb-3 flex justify-between">
+                    <span>QuickMart Store</span>
+                    <span class="badge badge-green">Active</span>
+                </div>
+                <div class="card p-4 mb-3 flex justify-between">
+                    <span>FreshFarm Organics</span>
+                    <span class="badge badge-amber">Pending KYC</span>
+                </div>
+            `;
+        }
+
+        function renderRiders() {
+            return `
+                <h3 class="text-xl font-bold mb-4">Rider Management</h3>
+                <div class="card p-4 mb-3 flex justify-between">
+                    <span>RID-9876 (You)</span>
+                    <span class="badge badge-green">Active</span>
+                </div>
+                <div class="card p-4 flex justify-between">
+                    <span>RID-1234 (Arjun)</span>
+                    <span class="badge badge-slate">Offline</span>
+                </div>
+            `;
+        }
+
+        function renderCatalog() {
+            return `
+                <h3 class="text-xl font-bold mb-4">Product Catalog</h3>
+                <p class="text-slate-500">Categories, brands, products, pricing rules (simulated)</p>
+            `;
+        }
+
+        function renderOrders() {
+            return `
+                <h3 class="text-xl font-bold mb-4">Order Center</h3>
+                <div id="adminOrderList" class="space-y-2"></div>
+            `;
+        }
+
+        function renderLogistics() {
+            return `
+                <h3 class="text-xl font-bold mb-4">Logistics</h3>
+                <div class="card p-4 mb-3">
+                    <p class="font-medium">Dark Stores</p>
+                    <div id="darkStoreList" class="mt-2"></div>
+                </div>
+                <div class="card p-4">
+                    <p class="font-medium">Delivery Zones</p>
+                    <p class="text-sm text-slate-500">Koramangala, Indiranagar, MG Road</p>
+                </div>
+            `;
+        }
+
+        function renderMarketing() {
+            return `
+                <h3 class="text-xl font-bold mb-4">Marketing</h3>
+                <div class="card p-4 mb-3">
+                    <p class="font-medium">Active Campaigns</p>
+                    <div id="campaignList" class="mt-2"></div>
+                </div>
+            `;
+        }
+
+        function renderFinance() {
+            return `
+                <h3 class="text-xl font-bold mb-4">Finance</h3>
+                <div class="kpi-card mb-3"><p>Total Revenue</p><p class="text-xl font-bold" id="aRevenue">₹0</p></div>
+                <div class="card p-4">Payouts, Commissions, Taxes (simulated)</div>
+            `;
+        }
+
+        function renderCRM() {
+            return `
+                <h3 class="text-xl font-bold mb-4">Customer Relationship</h3>
+                <div class="card p-4">Tickets, Live Chat, Call Logs (simulated)</div>
+            `;
+        }
+
+        function renderAnalytics() {
+            return `
+                <h3 class="text-xl font-bold mb-4">Advanced Analytics</h3>
+                <div class="card p-4">Sales Funnels, Cohorts, LTV, CAC (simulated)</div>
+            `;
+        }
+
+        function renderAI() {
+            return `
+                <h3 class="text-xl font-bold mb-4">AI Center</h3>
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="card p-3"><p>Demand Forecast</p><span class="badge badge-blue">AI</span></div>
+                    <div class="card p-3"><p>Inventory Prediction</p><span class="badge badge-blue">AI</span></div>
+                    <div class="card p-3"><p>Dynamic Pricing</p><span class="badge badge-blue">AI</span></div>
+                </div>
+            `;
+        }
+
+        function renderCMS() {
+            return `
+                <h3 class="text-xl font-bold mb-4">Content Management</h3>
+                <div class="card p-4">Banners, FAQs, Policies (simulated)</div>
+            `;
+        }
+
+        function renderSystem() {
+            return `
+                <h3 class="text-xl font-bold mb-4">System Settings</h3>
+                <div class="card p-4">Roles, Audit Logs, API Keys (simulated)</div>
+            `;
+        }
+
+        // Global update function
+        window.updateUI = function(s) {
+            // Executive KPIs
+            document.getElementById('aOrders') && (document.getElementById('aOrders').innerText = s.stats.totalOrders);
+            document.getElementById('aRevenue') && (document.getElementById('aRevenue').innerText = '₹' + s.stats.revenue);
+            document.getElementById('aLive') && (document.getElementById('aLive').innerText = s.stats.liveOrders);
+            document.getElementById('aRiders') && (document.getElementById('aRiders').innerText = s.riderAssigned ? '1' : '0');
+            document.getElementById('aAvgTime') && (document.getElementById('aAvgTime').innerText = s.stats.averageDeliveryTime + ' min');
+            document.getElementById('aCancelRate') && (document.getElementById('aCancelRate').innerText = s.stats.cancellationRate + '%');
+
+            // Activity feed
+            const feedDiv = document.getElementById('adminFeed');
+            if (feedDiv) {
+                feedDiv.innerHTML = s.orders.slice(-6).reverse().map(o => `
+                    <div class="flex justify-between items-center text-sm border-b pb-1">
+                        <span>${o.product} <span class="text-xs text-slate-500">#${o.id}</span></span>
+                        <span class="badge ${o.status==='delivered'?'badge-green':o.status==='cancelled'?'badge-rose':'badge-blue'}">${o.status}</span>
+                    </div>
+                `).join('');
+            }
+
+            // Orders list in Orders tab
+            if (currentTab === 'orders') {
+                const orderListDiv = document.getElementById('adminOrderList');
+                if (orderListDiv) {
+                    orderListDiv.innerHTML = s.orders.length === 0
+                        ? '<p class="text-slate-400">No orders yet.</p>'
+                        : s.orders.map(o => `
+                            <div class="card p-3 flex justify-between">
+                                <span>${o.product} #${o.id}</span>
+                                <span class="badge ${o.status==='delivered'?'badge-green':'badge-blue'}">${o.status}</span>
+                            </div>
+                        `).join('');
+                }
+            }
+
+            // Dark stores
+            if (currentTab === 'logistics') {
+                const storeDiv = document.getElementById('darkStoreList');
+                if (storeDiv && s.darkStores) {
+                    storeDiv.innerHTML = s.darkStores.map(ds => `
+                        <div class="flex justify-between text-sm py-1">
+                            <span>${ds.name}</span>
+                            <span class="text-xs text-slate-500">${ds.address}</span>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            // Campaigns
+            if (currentTab === 'marketing') {
+                const campDiv = document.getElementById('campaignList');
+                if (campDiv && s.campaigns) {
+                    campDiv.innerHTML = s.campaigns.map(c => `
+                        <div class="flex justify-between text-sm py-1">
+                            <span>${c.name}</span>
+                            <span class="badge ${c.active?'badge-green':'badge-slate'}">${c.active?'Active':'Inactive'}</span>
+                        </div>
+                    `).join('');
+                }
+            }
+        };
+
+        // Initial load
+        switchAdminTab('executive');
+    </script>
 </body>
 </html>

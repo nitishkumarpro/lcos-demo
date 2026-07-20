@@ -1,53 +1,252 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rider – LCOS</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="state.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>🛵 Rider – LCOS</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="state.js"></script>
+    <style>
+        .rider-container { max-width: 480px; margin: 0 auto; }
+        .map-placeholder { background: #e2e8f0; border-radius: 1rem; height: 200px; display: flex; align-items: center; justify-content: center; }
+        .earnings-card { background: white; border-radius: 1rem; padding: 1rem; border: 1px solid #e2e8f0; }
+        .toggle-switch { width: 44px; height: 24px; background: #cbd5e1; border-radius: 12px; position: relative; cursor: pointer; transition: background 0.2s; }
+        .toggle-switch.active { background: #10b981; }
+        .toggle-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: white; border-radius: 50%; transition: transform 0.2s; }
+        .toggle-switch.active::after { transform: translateX(20px); }
+    </style>
 </head>
-<body class="h-screen flex flex-col bg-white">
-  <header class="bg-white border-b px-4 py-3 flex justify-between items-center shadow-sm">
-    <span class="font-bold text-emerald-600"><i class="fa-solid fa-motorcycle"></i> Rider</span>
-    <label class="flex items-center gap-2 text-sm"><span>Online</span><input type="checkbox" checked class="accent-emerald-500"></label>
-  </header>
-  <main class="flex-1 p-4 overflow-y-auto">
-    <div class="card p-4 mb-4 text-center">
-      <p class="text-slate-500">Today Earnings</p>
-      <p class="text-2xl font-bold">₹450</p>
-    </div>
-    <div id="riderOrderPopup" class="card p-4 hidden border-emerald-300 bg-emerald-50">
-      <p class="font-bold text-emerald-700">🔔 New Pickup Request</p>
-      <p id="riderOrderDetails" class="text-sm mt-1"></p>
-      <button onclick="acceptDelivery()" class="btn btn-primary w-full mt-3 bg-emerald-600 hover:bg-emerald-700">Accept Delivery</button>
-    </div>
-    <div class="mt-6 space-y-3">
-      <div class="card p-3"><span class="font-medium">Performance</span><p class="text-sm text-slate-500">Acceptance 100% | Rating 4.9</p></div>
-      <div class="card p-3"><span class="font-medium">Wallet</span><p class="text-sm text-slate-500">Balance: ₹450</p></div>
-    </div>
-  </main>
-  <script>
-    window.updateUI = function(s) {
-      const popup = document.getElementById('riderOrderPopup');
-      if (s.riderAssigned) {
-        popup.classList.remove('hidden');
-        document.getElementById('riderOrderDetails').innerText = `Order #${s.riderAssigned} – Pickup ready`;
-      } else {
-        popup.classList.add('hidden');
-      }
-    };
-    function acceptDelivery() {
-      if (state.riderAssigned && state.currentOrderId) {
-        advanceOrder('delivered');
-        state.riderAssigned = null;
-        state.stats.liveOrders = Math.max(0, state.stats.liveOrders - 1);
-        save();
-      }
-    }
-    updateUI(state);
-  </script>
+<body class="h-screen flex flex-col bg-slate-50">
+
+    <!-- HEADER -->
+    <header class="app-header">
+        <div class="flex items-center gap-2">
+            <i class="fa-solid fa-motorcycle text-emerald-600 text-xl"></i>
+            <span class="font-bold text-lg">Rider</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="text-sm text-slate-500">ID: RID-9876</span>
+            <div class="toggle-switch active" id="onlineToggle" onclick="toggleOnline()"></div>
+            <span class="text-xs font-medium text-emerald-600">Online</span>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 overflow-y-auto p-4" id="riderContent">
+        <!-- Dashboard Screen -->
+        <div id="dashboardScreen">
+            <div class="earnings-card text-center mb-4">
+                <p class="text-slate-500">Today's Earnings</p>
+                <p class="text-3xl font-bold">₹<span id="riderEarnings">450</span></p>
+                <p class="text-sm text-slate-500">5 deliveries completed</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mb-4">
+                <div class="card p-3 text-center">
+                    <p class="text-slate-500 text-xs">Weekly</p>
+                    <p class="font-bold">₹3,240</p>
+                </div>
+                <div class="card p-3 text-center">
+                    <p class="text-slate-500 text-xs">Incentives</p>
+                    <p class="font-bold text-emerald-600">+₹150</p>
+                </div>
+            </div>
+
+            <!-- Heat Map / Peak Zones (simulated) -->
+            <h4 class="font-semibold mb-2">🔥 Peak Zones</h4>
+            <div class="map-placeholder mb-4">
+                <i class="fa-solid fa-map text-3xl text-slate-400"></i>
+                <span class="text-slate-500 ml-2">Live Heat Map (simulated)</span>
+            </div>
+
+            <div class="card p-4 mb-4">
+                <h4 class="font-semibold mb-2">Leaderboard</h4>
+                <div class="flex justify-between text-sm">
+                    <span>🏆 You</span><span>#12</span>
+                </div>
+                <div class="flex justify-between text-sm text-slate-500">
+                    <span>1. Arjun Singh</span><span>32 deliveries</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Earnings Screen -->
+        <div id="earningsScreen" class="hidden space-y-4">
+            <h3 class="font-bold text-lg">💰 Earnings</h3>
+            <div class="card p-4">
+                <div class="flex justify-between"><span>Today</span><span>₹450</span></div>
+                <div class="flex justify-between"><span>Yesterday</span><span>₹520</span></div>
+                <div class="flex justify-between"><span>This Week</span><span>₹3,240</span></div>
+                <div class="flex justify-between"><span>This Month</span><span>₹14,500</span></div>
+            </div>
+            <div class="card p-4">
+                <p class="font-medium">Tips</p>
+                <p class="text-sm text-slate-500">₹45 earned in tips today</p>
+            </div>
+            <button class="btn btn-primary w-full">Withdraw Earnings</button>
+        </div>
+
+        <!-- Performance Screen -->
+        <div id="performanceScreen" class="hidden space-y-4">
+            <h3 class="font-bold text-lg">📊 Performance</h3>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="card p-3"><p class="text-xs text-slate-500">Acceptance Rate</p><p class="font-bold text-green-600" id="accRate">98%</p></div>
+                <div class="card p-3"><p class="text-xs text-slate-500">Cancellation</p><p class="font-bold text-red-500" id="cancelRate">2%</p></div>
+                <div class="card p-3"><p class="text-xs text-slate-500">Rating</p><p class="font-bold">⭐ 4.9</p></div>
+                <div class="card p-3"><p class="text-xs text-slate-500">Speed</p><p class="font-bold">Fast</p></div>
+            </div>
+            <div class="card p-4">
+                <p class="font-medium">Experience Level</p>
+                <span class="badge badge-amber">Gold</span>
+            </div>
+        </div>
+
+        <!-- Wallet Screen -->
+        <div id="walletScreen" class="hidden space-y-4">
+            <h3 class="font-bold text-lg">💳 Wallet</h3>
+            <div class="card p-4 text-center">
+                <p class="text-slate-500">Balance</p>
+                <p class="text-3xl font-bold">₹<span id="riderWalletBalance">450</span></p>
+            </div>
+            <div class="card p-4">
+                <p class="font-medium">Pending Settlements</p>
+                <p class="text-sm text-slate-500">₹0</p>
+            </div>
+            <button class="btn btn-outline w-full">Transaction History</button>
+        </div>
+
+        <!-- Support Screen -->
+        <div id="supportScreen" class="hidden space-y-4">
+            <h3 class="font-bold text-lg">🆘 Support</h3>
+            <div class="card p-4">
+                <p><i class="fa-solid fa-phone"></i> Call Support</p>
+            </div>
+            <div class="card p-4">
+                <p><i class="fa-solid fa-message"></i> Chat with Support</p>
+            </div>
+            <div class="card p-4 border-red-200">
+                <p class="font-bold text-red-600">SOS</p>
+                <p class="text-sm">Emergency assistance</p>
+            </div>
+        </div>
+
+        <!-- New Order Popup (overlay) -->
+        <div id="newOrderPopup" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl">
+                <div class="text-center mb-4">
+                    <i class="fa-solid fa-bell text-3xl text-emerald-500 mb-2 animate-pulse"></i>
+                    <h4 class="font-bold text-lg">New Delivery Request</h4>
+                </div>
+                <div class="space-y-2 mb-4">
+                    <div class="flex justify-between"><span>Pickup</span><span class="font-medium">QuickMart Store</span></div>
+                    <div class="flex justify-between"><span>Drop</span><span class="font-medium">Home, 12th Cross</span></div>
+                    <div class="flex justify-between"><span>Distance</span><span>2.4 km</span></div>
+                    <div class="flex justify-between"><span>Est. Time</span><span>12 mins</span></div>
+                    <div class="flex justify-between"><span>Earnings</span><span class="font-bold text-emerald-600">₹45</span></div>
+                </div>
+                <div class="flex gap-3">
+                    <button class="btn btn-outline flex-1" onclick="rejectOrder()">Reject</button>
+                    <button class="btn btn-primary flex-1 bg-emerald-600 hover:bg-emerald-700" onclick="acceptOrder()">Accept</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- BOTTOM NAVIGATION -->
+    <nav class="tab-bar">
+        <button onclick="switchRiderTab('dashboard')" class="tab-btn active" data-rtab="dashboard">
+            <i class="fa-solid fa-house"></i><span>Home</span>
+        </button>
+        <button onclick="switchRiderTab('earnings')" class="tab-btn" data-rtab="earnings">
+            <i class="fa-solid fa-chart-simple"></i><span>Earnings</span>
+        </button>
+        <button onclick="switchRiderTab('performance')" class="tab-btn" data-rtab="performance">
+            <i class="fa-solid fa-gauge"></i><span>Perf</span>
+        </button>
+        <button onclick="switchRiderTab('wallet')" class="tab-btn" data-rtab="wallet">
+            <i class="fa-solid fa-wallet"></i><span>Wallet</span>
+        </button>
+        <button onclick="switchRiderTab('support')" class="tab-btn" data-rtab="support">
+            <i class="fa-solid fa-headset"></i><span>Help</span>
+        </button>
+    </nav>
+
+    <script>
+        let online = true;
+
+        // ---------- Tab Switching ----------
+        function switchRiderTab(tab) {
+            document.querySelectorAll('[id$="Screen"]').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tab + 'Screen').classList.remove('hidden');
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.tab-btn[data-rtab="${tab}"]`).classList.add('active');
+        }
+
+        // ---------- Online Toggle ----------
+        function toggleOnline() {
+            online = !online;
+            const toggle = document.getElementById('onlineToggle');
+            if (online) {
+                toggle.classList.add('active');
+                document.getElementById('onlineToggle').nextElementSibling.textContent = 'Online';
+            } else {
+                toggle.classList.remove('active');
+                document.getElementById('onlineToggle').nextElementSibling.textContent = 'Offline';
+            }
+            // If offline, reject any incoming order
+            if (!online && window.state.riderAssigned) {
+                rejectOrder();
+            }
+        }
+
+        // ---------- Order Popup ----------
+        function acceptOrder() {
+            // Hide popup
+            document.getElementById('newOrderPopup').classList.add('hidden');
+            // Simulate rider accepting (in state.js this starts delivery)
+            if (window.state.riderAssigned && window.state.currentOrderId) {
+                window.riderAcceptOrder(); // from state.js
+                // After acceptance, we could also simulate a "picked up" status, but lifecycle will handle.
+            }
+        }
+
+        function rejectOrder() {
+            document.getElementById('newOrderPopup').classList.add('hidden');
+            // Optionally cancel the order or unassign rider (simplified: just hide popup, rider stays unassigned)
+            // In a real scenario, you might trigger a different rider assignment.
+            // For now, just clear the rider assignment
+            window.state.riderAssigned = null;
+            window.saveState();
+        }
+
+        // ---------- Update UI from shared state ----------
+        window.updateUI = function(s) {
+            // Show/hide popup based on riderAssigned
+            const popup = document.getElementById('newOrderPopup');
+            if (s.riderAssigned && online) {
+                popup.classList.remove('hidden');
+                // You could update order details in popup dynamically, but it's static for demo.
+            } else {
+                popup.classList.add('hidden');
+            }
+
+            // Update rider earnings (we can keep a running total from orders)
+            // For demo, we just show a static value; could be connected to wallet.
+            // Wallet balance (rider)
+            document.getElementById('riderWalletBalance').innerText = s.wallet.riderBalance || '450';
+            document.getElementById('riderEarnings').innerText = s.wallet.riderBalance || '450';
+
+            // Performance metrics (from state.riderPerformance)
+            if (s.riderPerformance) {
+                document.getElementById('accRate').innerText = s.riderPerformance.acceptanceRate + '%';
+                document.getElementById('cancelRate').innerText = s.riderPerformance.cancellationRate + '%';
+            }
+        };
+
+        // Initial render
+        updateUI(window.state);
+    </script>
 </body>
 </html>

@@ -1,229 +1,420 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Customer – LCOS</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="state.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>🛍️ Customer – LCOS</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="state.js"></script>
+    <style>
+        /* Additional inline styles for this page */
+        .customer-container { max-width: 480px; margin: 0 auto; }
+        .bubble { background: #eff6ff; border-radius: 50px; padding: 0.25rem 0.75rem; font-size: 0.75rem; }
+        .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+        .tracking-step { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0; }
+        .tracking-step i { width: 1.5rem; text-align: center; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid #e2e8f0; }
+        .coupon-input { display: flex; gap: 0.5rem; }
+        .address-card { border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 1rem; cursor: pointer; }
+        .address-card.active { border-color: #2563eb; background: #eff6ff; }
+    </style>
 </head>
-<body class="h-screen flex flex-col">
-  <!-- Header -->
-  <header class="bg-white border-b px-4 py-3 flex items-center justify-between shadow-sm">
-    <div class="flex items-center gap-2">
-      <i class="fa-solid fa-location-dot text-blue-500"></i>
-      <span class="font-medium">Home, 12th Cross</span>
-      <i class="fa-solid fa-chevron-down text-xs"></i>
-    </div>
-    <div class="flex items-center gap-4">
-      <span class="bg-blue-50 px-3 py-1 rounded-full text-sm text-blue-700"><i class="fa-solid fa-wallet"></i> ₹<span id="headerBalance">240</span></span>
-      <span class="relative"><i class="fa-solid fa-bell text-slate-600"></i><span class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span></span>
-    </div>
-  </header>
+<body class="h-screen flex flex-col bg-slate-50">
 
-  <!-- Main Content -->
-  <main class="flex-1 overflow-y-auto p-4 pb-20" id="screenContainer">
-    <!-- ======= HOME ======= -->
-    <div id="homeScreen">
-      <!-- Search Bar -->
-      <div class="bg-white rounded-full px-4 py-3 flex items-center gap-2 mb-4 border">
-        <i class="fa-solid fa-magnifying-glass text-slate-400"></i>
-        <input type="text" placeholder="Search for products..." class="bg-transparent outline-none flex-1 text-sm">
-        <i class="fa-solid fa-microphone text-slate-400"></i>
-      </div>
-      <!-- Category Pills -->
-      <div class="flex gap-2 overflow-x-auto pb-3 mb-4 scrollbar-hide">
-        <span class="bg-blue-100 text-blue-700 rounded-full px-3 py-1 text-xs font-medium whitespace-nowrap">🥛 Milk</span>
-        <span class="bg-blue-100 text-blue-700 rounded-full px-3 py-1 text-xs font-medium whitespace-nowrap">🍞 Bread</span>
-        <span class="bg-blue-100 text-blue-700 rounded-full px-3 py-1 text-xs font-medium whitespace-nowrap">🍎 Fruits</span>
-        <span class="bg-blue-100 text-blue-700 rounded-full px-3 py-1 text-xs font-medium whitespace-nowrap">🥚 Eggs</span>
-        <span class="bg-blue-100 text-blue-700 rounded-full px-3 py-1 text-xs font-medium whitespace-nowrap">🍪 Snacks</span>
-        <span class="bg-blue-100 text-blue-700 rounded-full px-3 py-1 text-xs font-medium whitespace-nowrap">🧴 Personal Care</span>
-      </div>
-      <!-- Mega Banner -->
-      <div class="bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl p-5 text-white mb-5">
-        <h3 class="font-bold text-lg">⚡ Flash Sale – Up to 50% Off</h3>
-        <p class="text-sm opacity-90">On daily essentials. Limited time!</p>
-      </div>
-      <!-- Sections (dynamic grid) -->
-      <section class="mb-6">
-        <div class="flex justify-between items-center mb-2">
-          <h4 class="font-semibold">Daily Essentials</h4>
-          <a href="#" class="text-blue-600 text-xs">See All</a>
+    <!-- ========== HEADER ========== -->
+    <header class="app-header">
+        <div class="flex items-center gap-2">
+            <i class="fa-solid fa-location-dot text-blue-500"></i>
+            <span class="font-medium">Home, 12th Cross</span>
+            <i class="fa-solid fa-chevron-down text-xs text-slate-400"></i>
         </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div class="card p-3 flex flex-col items-center" onclick="buyNow('Amul Gold Milk', 65)">
-            <div class="text-3xl">🥛</div>
-            <p class="font-medium text-sm mt-1">Amul Gold Milk</p>
-            <p class="text-xs text-slate-500">500 ml · ₹65</p>
-            <button class="btn btn-primary text-xs mt-2 py-1 px-3">Buy Now</button>
-          </div>
-          <div class="card p-3 flex flex-col items-center" onclick="buyNow('Brown Bread', 45)">
-            <div class="text-3xl">🍞</div>
-            <p class="font-medium text-sm mt-1">Brown Bread</p>
-            <p class="text-xs text-slate-500">400g · ₹45</p>
-            <button class="btn btn-primary text-xs mt-2 py-1 px-3">Buy Now</button>
-          </div>
+        <div class="flex items-center gap-4">
+            <span class="bg-blue-50 px-3 py-1 rounded-full text-sm text-blue-700 font-medium">
+                <i class="fa-solid fa-wallet"></i> ₹<span id="headerBalance">240</span>
+            </span>
+            <span class="relative cursor-pointer">
+                <i class="fa-solid fa-bell text-slate-600"></i>
+                <span class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" id="notificationDot" style="display:none;"></span>
+            </span>
         </div>
-      </section>
-      <section class="mb-6">
-        <h4 class="font-semibold mb-2">Healthy Choices</h4>
-        <div class="grid grid-cols-2 gap-3">
-          <div class="card p-3 flex flex-col items-center" onclick="buyNow('Organic Eggs', 80)">
-            <div class="text-3xl">🥚</div><p class="font-medium text-sm mt-1">Organic Eggs</p><p class="text-xs text-slate-500">6 pcs · ₹80</p>
-            <button class="btn btn-primary text-xs mt-2 py-1 px-3">Buy Now</button>
-          </div>
-          <div class="card p-3 flex flex-col items-center" onclick="buyNow('Greek Yogurt', 55)">
-            <div class="text-3xl">🍶</div><p class="font-medium text-sm mt-1">Greek Yogurt</p><p class="text-xs text-slate-500">200g · ₹55</p>
-            <button class="btn btn-primary text-xs mt-2 py-1 px-3">Buy Now</button>
-          </div>
+    </header>
+
+    <!-- ========== SCREENS CONTAINER ========== -->
+    <main class="flex-1 overflow-y-auto p-4" id="screenContainer">
+
+        <!-- HOME SCREEN -->
+        <div id="homeScreen">
+            <!-- Search Bar -->
+            <div class="bg-white rounded-full px-4 py-3 flex items-center gap-2 mb-4 border shadow-sm">
+                <i class="fa-solid fa-magnifying-glass text-slate-400"></i>
+                <input type="text" placeholder="Search 'milk', 'bread'..." class="bg-transparent outline-none flex-1 text-sm">
+                <i class="fa-solid fa-microphone text-slate-400"></i>
+                <i class="fa-solid fa-barcode text-slate-400"></i>
+            </div>
+
+            <!-- Category Pills -->
+            <div class="flex gap-2 overflow-x-auto pb-3 mb-4 scrollbar-hide">
+                <span class="bubble bg-blue-100 text-blue-700 whitespace-nowrap">🥛 Milk</span>
+                <span class="bubble bg-blue-100 text-blue-700 whitespace-nowrap">🍞 Bread</span>
+                <span class="bubble bg-blue-100 text-blue-700 whitespace-nowrap">🍎 Fruits</span>
+                <span class="bubble bg-blue-100 text-blue-700 whitespace-nowrap">🥚 Eggs</span>
+                <span class="bubble bg-blue-100 text-blue-700 whitespace-nowrap">🍪 Snacks</span>
+                <span class="bubble bg-blue-100 text-blue-700 whitespace-nowrap">🧴 Personal Care</span>
+                <span class="bubble bg-blue-100 text-blue-700 whitespace-nowrap">🥤 Beverages</span>
+                <span class="bubble bg-blue-100 text-blue-700 whitespace-nowrap">🧹 Cleaning</span>
+            </div>
+
+            <!-- Mega Banner Carousel (simulated) -->
+            <div class="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-5 text-white mb-5 shadow-md">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-bold text-lg">⚡ Flash Sale</h3>
+                        <p class="text-sm opacity-90">Up to 50% off on daily essentials</p>
+                    </div>
+                    <span class="bg-white text-blue-600 px-2 py-1 rounded text-xs font-bold">LIVE</span>
+                </div>
+            </div>
+
+            <!-- Dynamic Sections -->
+            <section class="mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <h4 class="font-semibold">Daily Essentials</h4>
+                    <a href="#" class="text-blue-600 text-xs">See All</a>
+                </div>
+                <div class="product-grid">
+                    <div class="card p-3 flex flex-col items-center cursor-pointer" onclick="openProduct('Amul Gold Milk', 65)">
+                        <div class="text-3xl">🥛</div>
+                        <p class="font-medium text-sm mt-1">Amul Gold Milk</p>
+                        <p class="text-xs text-slate-500">500 ml · ₹65</p>
+                        <span class="badge badge-blue mt-1">In Stock</span>
+                        <button class="btn btn-primary btn-sm mt-2">Buy Now</button>
+                    </div>
+                    <div class="card p-3 flex flex-col items-center cursor-pointer" onclick="openProduct('Brown Bread', 45)">
+                        <div class="text-3xl">🍞</div>
+                        <p class="font-medium text-sm mt-1">Brown Bread</p>
+                        <p class="text-xs text-slate-500">400g · ₹45</p>
+                        <span class="badge badge-blue mt-1">In Stock</span>
+                        <button class="btn btn-primary btn-sm mt-2">Buy Now</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-6">
+                <h4 class="font-semibold mb-2">Healthy Choices</h4>
+                <div class="product-grid">
+                    <div class="card p-3 flex flex-col items-center cursor-pointer" onclick="openProduct('Organic Eggs', 80)">
+                        <div class="text-3xl">🥚</div>
+                        <p class="font-medium text-sm mt-1">Organic Eggs</p>
+                        <p class="text-xs text-slate-500">6 pcs · ₹80</p>
+                        <button class="btn btn-primary btn-sm mt-2">Buy Now</button>
+                    </div>
+                    <div class="card p-3 flex flex-col items-center cursor-pointer" onclick="openProduct('Greek Yogurt', 55)">
+                        <div class="text-3xl">🍶</div>
+                        <p class="font-medium text-sm mt-1">Greek Yogurt</p>
+                        <p class="text-xs text-slate-500">200g · ₹55</p>
+                        <button class="btn btn-primary btn-sm mt-2">Buy Now</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-6">
+                <h4 class="font-semibold mb-2">Under ₹99</h4>
+                <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                    <div class="card p-3 min-w-[140px] flex flex-col items-center" onclick="openProduct('Banana (6 pcs)', 30)">
+                        <div class="text-3xl">🍌</div><p class="text-sm">Banana 6 pcs</p><p class="text-xs text-slate-500">₹30</p>
+                    </div>
+                    <div class="card p-3 min-w-[140px] flex flex-col items-center" onclick="openProduct('Tomato (1 kg)', 40)">
+                        <div class="text-3xl">🍅</div><p class="text-sm">Tomato 1 kg</p><p class="text-xs text-slate-500">₹40</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- More sections can be added here: Trending, Buy Again, etc. -->
         </div>
-      </section>
-      <!-- More sections like "Under ₹99", "New Arrivals" etc. can be added following the same pattern -->
-    </div>
 
-    <!-- ======= CART (simulated) ======= -->
-    <div id="cartScreen" class="hidden space-y-4">
-      <h3 class="font-bold text-lg">Shopping Cart</h3>
-      <div id="cartItems" class="space-y-3"></div>
-      <div class="card p-4">
-        <div class="flex justify-between"><span>Subtotal</span><span id="cartTotal">₹0</span></div>
-        <div class="flex justify-between text-sm text-slate-500"><span>Delivery</span><span>Free</span></div>
-        <hr class="my-2">
-        <div class="flex justify-between font-bold"><span>Total</span><span id="cartGrandTotal">₹0</span></div>
-        <button onclick="checkout()" class="btn btn-primary w-full mt-4">Proceed to Checkout</button>
-      </div>
-    </div>
-
-    <!-- ======= TRACKING ======= -->
-    <div id="trackingScreen" class="hidden space-y-4">
-      <h3 class="font-bold text-lg"><i class="fa-solid fa-truck-fast text-blue-600"></i> Live Order Tracking</h3>
-      <div id="trackingSteps" class="space-y-4"></div>
-      <div class="mt-6 card p-4 text-center text-sm">
-        <i class="fa-solid fa-map-location-dot text-3xl text-blue-400 mb-2 block"></i>
-        <p>Rider location (simulated)</p>
-      </div>
-    </div>
-
-    <!-- ======= ORDERS ======= -->
-    <div id="ordersScreen" class="hidden space-y-3">
-      <h3 class="font-bold text-lg">My Orders</h3>
-      <div id="orderHistory" class="space-y-2"></div>
-    </div>
-
-    <!-- ======= WALLET ======= -->
-    <div id="walletScreen" class="hidden space-y-3">
-      <h3 class="font-bold text-lg">Wallet</h3>
-      <div class="card p-4">
-        <p class="text-slate-500">Balance</p>
-        <p class="text-2xl font-bold">₹<span id="walletBalance">240</span></p>
-        <div class="flex gap-2 mt-2">
-          <button class="btn btn-outline text-xs">Add Money</button>
-          <button class="btn btn-outline text-xs">Withdraw</button>
+        <!-- PRODUCT DETAIL SCREEN -->
+        <div id="productScreen" class="hidden">
+            <button onclick="switchTab('home')" class="btn btn-outline btn-sm mb-3"><i class="fa-solid fa-arrow-left"></i> Back</button>
+            <div class="card p-4">
+                <div class="text-center text-5xl mb-3" id="productEmoji">🥛</div>
+                <h2 id="productName" class="text-xl font-bold"></h2>
+                <p class="text-slate-500 text-sm mb-2">500 ml</p>
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="badge badge-blue">In Stock</span>
+                    <span class="text-sm text-green-600">Fast Delivery</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-2xl font-bold" id="productPrice">₹65</span>
+                    <button class="btn btn-primary" onclick="addToCart()"><i class="fa-solid fa-cart-plus"></i> Add to Cart</button>
+                </div>
+                <hr class="my-4">
+                <h4 class="font-semibold">Product Description</h4>
+                <p class="text-sm text-slate-600">Fresh, high-quality product sourced directly from local farms. No preservatives added.</p>
+            </div>
         </div>
-      </div>
-      <div class="card p-4 text-sm">Transaction history (coming soon)</div>
-    </div>
 
-    <!-- ======= PROFILE ======= -->
-    <div id="profileScreen" class="hidden space-y-3">
-      <h3 class="font-bold text-lg">Profile</h3>
-      <div class="card p-4 space-y-2 text-sm">
-        <p><i class="fa-solid fa-user"></i> Nitish Kumar</p>
-        <p><i class="fa-solid fa-envelope"></i> nitish@example.com</p>
-        <p><i class="fa-solid fa-phone"></i> +91 75699 79953</p>
-        <p><i class="fa-solid fa-location-dot"></i> 2 saved addresses</p>
-        <p><i class="fa-solid fa-credit-card"></i> Saved cards: 1</p>
-        <p><i class="fa-solid fa-moon"></i> Theme (light/dark simulated)</p>
-      </div>
-    </div>
-  </main>
+        <!-- CART SCREEN -->
+        <div id="cartScreen" class="hidden space-y-4">
+            <h3 class="font-bold text-lg">🛒 Shopping Cart</h3>
+            <div id="cartItems" class="space-y-3"></div>
+            <div class="card p-4">
+                <div class="flex justify-between text-sm"><span>Subtotal</span><span id="cartSubtotal">₹0</span></div>
+                <div class="flex justify-between text-sm"><span>Delivery</span><span class="text-green-600">Free</span></div>
+                <div class="coupon-input mt-2">
+                    <input type="text" placeholder="Enter coupon code" class="flex-1 text-sm">
+                    <button class="btn btn-outline btn-sm">Apply</button>
+                </div>
+                <hr class="my-2">
+                <div class="flex justify-between font-bold"><span>Total</span><span id="cartTotal">₹0</span></div>
+                <button class="btn btn-primary w-full mt-4" onclick="goToCheckout()">Proceed to Checkout</button>
+            </div>
+        </div>
 
-  <!-- Bottom Navigation -->
-  <nav class="bg-white border-t px-2 py-2 flex justify-around text-xs font-medium">
-    <button onclick="switchTab('home')" class="tab-btn active flex flex-col items-center" data-tab="home"><i class="fa-solid fa-house text-lg"></i>Home</button>
-    <button onclick="switchTab('cart')" class="tab-btn flex flex-col items-center" data-tab="cart"><i class="fa-solid fa-cart-shopping text-lg"></i>Cart</button>
-    <button onclick="switchTab('tracking')" class="tab-btn flex flex-col items-center" data-tab="tracking"><i class="fa-solid fa-map-location-dot text-lg"></i>Track</button>
-    <button onclick="switchTab('orders')" class="tab-btn flex flex-col items-center" data-tab="orders"><i class="fa-solid fa-receipt text-lg"></i>Orders</button>
-    <button onclick="switchTab('wallet')" class="tab-btn flex flex-col items-center" data-tab="wallet"><i class="fa-solid fa-wallet text-lg"></i>Wallet</button>
-    <button onclick="switchTab('profile')" class="tab-btn flex flex-col items-center" data-tab="profile"><i class="fa-solid fa-user text-lg"></i>Profile</button>
-  </nav>
+        <!-- CHECKOUT SCREEN -->
+        <div id="checkoutScreen" class="hidden space-y-4">
+            <h3 class="font-bold text-lg">📦 Checkout</h3>
+            <div class="card p-4">
+                <h4 class="font-semibold mb-2">Delivery Address</h4>
+                <div class="address-card active" id="addressHome">
+                    <p class="font-medium">Home</p>
+                    <p class="text-sm text-slate-500">12th Cross, Koramangala, Bangalore</p>
+                </div>
+                <button class="btn btn-outline btn-sm mt-2"><i class="fa-solid fa-plus"></i> Add New Address</button>
+            </div>
+            <div class="card p-4">
+                <h4 class="font-semibold mb-2">Payment Method</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2"><input type="radio" name="payment" checked> UPI</label>
+                    <label class="flex items-center gap-2"><input type="radio" name="payment"> Cash on Delivery</label>
+                </div>
+            </div>
+            <button class="btn btn-primary w-full" onclick="placeOrderAndTrack()">Place Order</button>
+        </div>
 
-  <script>
-    // Tab switching
-    function switchTab(tab) {
-      document.querySelectorAll('[id$="Screen"]').forEach(el => el.classList.add('hidden'));
-      document.getElementById(tab + 'Screen').classList.remove('hidden');
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active');
-    }
+        <!-- TRACKING SCREEN -->
+        <div id="trackingScreen" class="hidden space-y-4">
+            <h3 class="font-bold text-lg"><i class="fa-solid fa-truck-fast text-blue-600"></i> Live Order Tracking</h3>
+            <div id="trackingSteps" class="space-y-4"></div>
+            <div class="mt-6 card p-4 text-center text-sm">
+                <i class="fa-solid fa-map-location-dot text-3xl text-blue-400 mb-2 block"></i>
+                <p>Rider location (simulated)</p>
+                <p class="text-xs text-slate-500">ETA: <span id="etaDisplay">10 mins</span></p>
+            </div>
+        </div>
 
-    // Buy flow
-    let cart = [];
-    function buyNow(name, price) {
-      cart = [{ name, price }];
-      renderCart();
-      switchTab('cart');
-    }
+        <!-- ORDERS SCREEN -->
+        <div id="ordersScreen" class="hidden space-y-3">
+            <h3 class="font-bold text-lg">📋 My Orders</h3>
+            <div id="orderHistory" class="space-y-2"></div>
+        </div>
 
-    function renderCart() {
-      const container = document.getElementById('cartItems');
-      const total = cart.reduce((s, i) => s + i.price, 0);
-      container.innerHTML = cart.map(i => `
-        <div class="card p-3 flex justify-between">
-          <span>${i.name}</span><span>₹${i.price}</span>
-        </div>`).join('');
-      document.getElementById('cartTotal').innerText = '₹' + total;
-      document.getElementById('cartGrandTotal').innerText = '₹' + total;
-    }
+        <!-- WALLET SCREEN -->
+        <div id="walletScreen" class="hidden space-y-3">
+            <h3 class="font-bold text-lg">💰 Wallet</h3>
+            <div class="card p-4 text-center">
+                <p class="text-slate-500">Available Balance</p>
+                <p class="text-3xl font-bold">₹<span id="walletBalance">240</span></p>
+                <div class="flex gap-2 justify-center mt-3">
+                    <button class="btn btn-outline btn-sm">Add Money</button>
+                    <button class="btn btn-outline btn-sm">Withdraw</button>
+                </div>
+            </div>
+            <h4 class="font-semibold mt-4">Transaction History</h4>
+            <div id="walletTransactions" class="space-y-2"></div>
+        </div>
 
-    function checkout() {
-      if (cart.length === 0) return;
-      const item = cart[0];
-      const order = placeOrder(item.name, item.price);
-      simulateLifecycle();
-      cart = [];
-      renderCart();
-      switchTab('tracking');
-    }
+        <!-- PROFILE SCREEN -->
+        <div id="profileScreen" class="hidden space-y-3">
+            <h3 class="font-bold text-lg">👤 Profile</h3>
+            <div class="card p-4 space-y-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-xl">N</div>
+                    <div>
+                        <p class="font-semibold">Nitish Kumar</p>
+                        <p class="text-sm text-slate-500">+91 75699 79953</p>
+                    </div>
+                </div>
+                <hr>
+                <p><i class="fa-solid fa-envelope"></i> nitish@example.com</p>
+                <p><i class="fa-solid fa-location-dot"></i> 2 saved addresses</p>
+                <p><i class="fa-solid fa-credit-card"></i> Saved cards: 1</p>
+                <p><i class="fa-solid fa-moon"></i> Theme: Light (simulated)</p>
+            </div>
+        </div>
+    </main>
 
-    // Update UI from state changes
-    window.updateUI = function(s) {
-      // Tracking
-      const stepsDiv = document.getElementById('trackingSteps');
-      if (stepsDiv) {
-        const order = s.orders.find(o => o.id === s.currentOrderId);
-        if (order) {
-          const steps = ['placed','accepted','preparing','packed','assigned','delivered'];
-          const labels = ['Order Placed','Vendor Accepted','Preparing','Packed','Rider Assigned','Delivered'];
-          stepsDiv.innerHTML = steps.map((step,i) => {
-            const active = steps.indexOf(order.status) >= i;
-            return `<div class="flex items-center gap-3 ${active?'text-blue-700 font-medium':'text-slate-400'}"><i class="fa-solid fa-circle text-xs ${active?'text-blue-500':'text-slate-300'}"></i>${labels[i]}</div>`;
-          }).join('');
-        } else {
-          stepsDiv.innerHTML = '<p class="text-slate-400">No active order</p>';
+    <!-- ========== BOTTOM NAVIGATION ========== -->
+    <nav class="tab-bar">
+        <button onclick="switchTab('home')" class="tab-btn active" data-tab="home">
+            <i class="fa-solid fa-house"></i><span>Home</span>
+        </button>
+        <button onclick="switchTab('cart')" class="tab-btn" data-tab="cart">
+            <i class="fa-solid fa-cart-shopping"></i><span>Cart</span>
+        </button>
+        <button onclick="switchTab('tracking')" class="tab-btn" data-tab="tracking">
+            <i class="fa-solid fa-map-location-dot"></i><span>Track</span>
+        </button>
+        <button onclick="switchTab('orders')" class="tab-btn" data-tab="orders">
+            <i class="fa-solid fa-receipt"></i><span>Orders</span>
+        </button>
+        <button onclick="switchTab('wallet')" class="tab-btn" data-tab="wallet">
+            <i class="fa-solid fa-wallet"></i><span>Wallet</span>
+        </button>
+        <button onclick="switchTab('profile')" class="tab-btn" data-tab="profile">
+            <i class="fa-solid fa-user"></i><span>Profile</span>
+        </button>
+    </nav>
+
+    <script>
+        // ---------- LOCAL CART STATE ----------
+        let cart = [];
+
+        // ---------- TAB SWITCHING ----------
+        function switchTab(tab) {
+            // Hide all screens
+            document.querySelectorAll('[id$="Screen"]').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tab + 'Screen').classList.remove('hidden');
+
+            // Update active tab button
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.querySelector(`.tab-btn[data-tab="${tab}"]`);
+            if (activeBtn) activeBtn.classList.add('active');
+
+            // Special handling for cart tab – refresh cart UI
+            if (tab === 'cart') renderCart();
         }
-      }
-      // Order history
-      const histDiv = document.getElementById('orderHistory');
-      if (histDiv) {
-        histDiv.innerHTML = s.orders.length === 0
-          ? '<p class="text-slate-400">No orders yet.</p>'
-          : s.orders.slice().reverse().map(o => `
-            <div class="card p-3 flex justify-between">
-              <span>${o.product} <span class="text-xs text-slate-500">#${o.id}</span></span>
-              <span class="badge ${o.status==='delivered'?'badge-green':'badge-blue'}">${o.status}</span>
-            </div>`).join('');
-      }
-      // Wallet balance
-      document.getElementById('walletBalance').innerText = s.wallet.balance;
-      document.getElementById('headerBalance').innerText = s.wallet.balance;
-    };
 
-    // initial render
-    updateUI(state);
-  </script>
+        // ---------- PRODUCT DETAIL & CART ----------
+        let currentProduct = {};
+
+        function openProduct(name, price) {
+            currentProduct = { name, price };
+            document.getElementById('productName').innerText = name;
+            document.getElementById('productPrice').innerText = '₹' + price;
+            // set emoji
+            const emojis = { 'Amul Gold Milk': '🥛', 'Brown Bread': '🍞', 'Organic Eggs': '🥚', 'Greek Yogurt': '🍶' };
+            document.getElementById('productEmoji').innerText = emojis[name] || '📦';
+            switchTab('product');
+        }
+
+        function addToCart() {
+            cart.push({ ...currentProduct });
+            alert(currentProduct.name + ' added to cart!');
+            switchTab('cart');
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cartItems');
+            if (cart.length === 0) {
+                container.innerHTML = '<p class="text-slate-400 text-center py-4">Your cart is empty.</p>';
+                document.getElementById('cartSubtotal').innerText = '₹0';
+                document.getElementById('cartTotal').innerText = '₹0';
+                return;
+            }
+            let subtotal = 0;
+            container.innerHTML = cart.map((item, idx) => {
+                subtotal += item.price;
+                return `
+                    <div class="cart-item">
+                        <div>
+                            <p class="font-medium">${item.name}</p>
+                            <p class="text-xs text-slate-500">₹${item.price}</p>
+                        </div>
+                        <button class="btn btn-outline btn-sm text-red-500" onclick="removeCartItem(${idx})"><i class="fa-solid fa-trash"></i></button>
+                    </div>`;
+            }).join('');
+            document.getElementById('cartSubtotal').innerText = '₹' + subtotal;
+            document.getElementById('cartTotal').innerText = '₹' + subtotal;
+        }
+
+        function removeCartItem(index) {
+            cart.splice(index, 1);
+            renderCart();
+        }
+
+        function goToCheckout() {
+            if (cart.length === 0) return;
+            switchTab('checkout');
+        }
+
+        // ---------- PLACE ORDER & START LIFECYCLE ----------
+        function placeOrderAndTrack() {
+            if (cart.length === 0) return;
+            // Place each item as an order (or combine, but for demo we take first)
+            const item = cart[0];
+            const order = window.placeOrder(item.name, item.price); // from state.js
+            cart = [];
+            renderCart();
+            // Start the full lifecycle simulation
+            window.simulateFullLifecycle();
+            switchTab('tracking');
+        }
+
+        // ---------- UI UPDATE FROM CROSS‑TAB STATE ----------
+        window.updateUI = function(s) {
+            // Update wallet balance everywhere
+            document.getElementById('headerBalance').innerText = s.wallet.customerBalance;
+            document.getElementById('walletBalance').innerText = s.wallet.customerBalance;
+
+            // Wallet transactions
+            const txDiv = document.getElementById('walletTransactions');
+            if (txDiv) {
+                txDiv.innerHTML = s.wallet.transactions.slice(-5).reverse().map(tx => `
+                    <div class="card p-3 flex justify-between">
+                        <div><span class="badge ${tx.type==='credit'?'badge-green':'badge-rose'}">${tx.type}</span> ${tx.desc}</div>
+                        <span class="font-medium">₹${tx.amount}</span>
+                    </div>`).join('');
+            }
+
+            // Tracking screen
+            const stepsDiv = document.getElementById('trackingSteps');
+            if (stepsDiv) {
+                const order = s.orders.find(o => o.id === s.currentOrderId);
+                if (!order) {
+                    stepsDiv.innerHTML = '<p class="text-slate-400">No active order.</p>';
+                    document.getElementById('etaDisplay').innerText = '--';
+                    return;
+                }
+                const steps = ['placed', 'accepted', 'preparing', 'packed', 'assigned', 'delivered'];
+                const labels = ['Order Placed', 'Vendor Accepted', 'Preparing', 'Packed', 'Rider Assigned', 'Delivered'];
+                const currentIdx = steps.indexOf(order.status);
+                stepsDiv.innerHTML = steps.map((step, idx) => {
+                    const active = idx <= currentIdx;
+                    return `<div class="tracking-step">
+                        <i class="fa-solid fa-circle text-xs ${active ? 'text-blue-500' : 'text-slate-300'}"></i>
+                        <span class="${active ? 'text-blue-700 font-medium' : 'text-slate-400'}">${labels[idx]}</span>
+                    </div>`;
+                }).join('');
+
+                // ETA simulation
+                const etas = { placed: '12 mins', accepted: '10 mins', preparing: '8 mins', packed: '5 mins', assigned: '3 mins', delivered: '0 mins' };
+                document.getElementById('etaDisplay').innerText = etas[order.status] || '--';
+            }
+
+            // Order history
+            const histDiv = document.getElementById('orderHistory');
+            if (histDiv) {
+                histDiv.innerHTML = s.orders.length === 0
+                    ? '<p class="text-slate-400">No orders yet.</p>'
+                    : s.orders.slice().reverse().map(o => `
+                        <div class="card p-3 flex justify-between items-center">
+                            <div>
+                                <p class="font-medium">${o.product}</p>
+                                <p class="text-xs text-slate-500">#${o.id} · ${o.time}</p>
+                            </div>
+                            <span class="badge ${o.status==='delivered'?'badge-green':o.status==='cancelled'?'badge-rose':'badge-blue'}">${o.status}</span>
+                        </div>`).join('');
+            }
+
+            // Notification dot (show if unread notifications for customer)
+            const custNotifs = s.notifications.filter(n => n.role === 'customer' && !n.read);
+            document.getElementById('notificationDot').style.display = custNotifs.length > 0 ? 'block' : 'none';
+        };
+
+        // Initial render
+        updateUI(window.state);
+    </script>
 </body>
 </html>
